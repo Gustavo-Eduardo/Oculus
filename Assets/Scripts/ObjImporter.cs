@@ -83,7 +83,7 @@ public class ObjImporter : MonoBehaviour
 
         Debug.Log($"Instantiating");
         // Step 6: Instantiate GameObject
-        GameObject obj = InstantiateGameObjectFromOBJ(filePath);
+        GameObject obj = InstantiateGameObjectFromOBJ(objRequest.downloadHandler.text);
         if (obj != null)
         {
             Debug.Log("Object created");
@@ -95,10 +95,12 @@ public class ObjImporter : MonoBehaviour
     }
 
     // You'll need to implement a method to instantiate the GameObject from the .obj file
-    private GameObject InstantiateGameObjectFromOBJ(string filePath)
+    // private GameObject InstantiateGameObjectFromOBJ(string filePath)
+    private GameObject InstantiateGameObjectFromOBJ(string strData)
     {
         // Read the .obj file        
-        string[] lines = File.ReadAllLines(filePath);
+        // string[] lines = File.ReadAllLines(filePath);
+        string[] lines = strData.Split("\n");
 
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
