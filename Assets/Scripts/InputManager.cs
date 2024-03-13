@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour
@@ -9,6 +10,7 @@ public class InputManager : MonoBehaviour
 
     private float rJoystickYInput;
     private bool pressingTrigger;
+    [SerializeField] private TextMeshProUGUI textObject;
 
     private void Awake() { }
 
@@ -42,11 +44,13 @@ public class InputManager : MonoBehaviour
 
     private void OnHoldButton()
     {
+        textObject.text = "Holding trigger";
         // VoiceRecognitionManager.Instance.TriggerStartRecording();
     }
 
     private void OnReleaseButton()
     {
+        textObject.text = "Release trigger";
         // VoiceRecognitionManager.Instance.TriggerStopRecording();
         Input_OnReleaseButton?.Invoke();
     }
