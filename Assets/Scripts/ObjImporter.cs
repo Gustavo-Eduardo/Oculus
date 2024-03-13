@@ -12,25 +12,21 @@ using Oculus.Interaction;
 public class ObjImporter : MonoBehaviour
 {
 
-    [SerializeField] private TextMeshProUGUI textObject;
-
-    public void ImportObject(Vector3 spawnPosition)
+    public void ImportObject(string text, Vector3 spawnPosition)
     {
-        StartCoroutine(LoadObjectCoroutine("banana", spawnPosition));
+        StartCoroutine(LoadObjectCoroutine(text, spawnPosition));
     }
 
     private IEnumerator LoadObjectCoroutine(string word, Vector3 spawnPosition)
     {
         // Step 1: Make API Request to http://localhost:3001/godmode/object-image?word=banana
         // string word = "banana";
-        textObject.text = "Sending request";
         string firstApiUrl = $"https://memorywarserver.herokuapp.com/godmode/object-image?word={word}";
         UnityWebRequest firstRequest = UnityWebRequest.Get(firstApiUrl);
         yield return firstRequest.SendWebRequest();
 
         if (firstRequest.result != UnityWebRequest.Result.Success)
         {
-        textObject.text = "API Request failed";
 
             Debug.LogError("Step 1 API request failed: " + firstRequest.error);
             yield break;
@@ -40,7 +36,6 @@ public class ObjImporter : MonoBehaviour
         string objectId = firstRequest.downloadHandler.text.Trim();
 
         Debug.Log($"Received ID, attempting polling: {objectId}");
-        textObject.text = $"Received ID, attempting polling: {objectId}";
 
 
         // Step 3: Polling for object conversion
