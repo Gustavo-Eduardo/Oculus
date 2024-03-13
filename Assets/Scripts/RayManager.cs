@@ -31,7 +31,7 @@ public class RayManager : MonoBehaviour
             SurfaceHit collision = rayInteractor.CollisionInfo.Value;
 
             // Vector3 hitPosition = collision.Point + Vector3.up * 3;
-            Vector3 hitPosition = collision.Point + Vector3.up * 0.2f;
+            Vector3 hitPosition = collision.Point + Vector3.up;
             objectImporter.ImportObject(hitPosition);
             // GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
             // cube.AddComponent<Rigidbody>();
