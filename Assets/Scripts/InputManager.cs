@@ -10,14 +10,29 @@ public class InputManager : MonoBehaviour
 
     private float rJoystickYInput;
     private bool pressingTrigger;
+    private bool pressingButton;
 
     private void Awake() { }
 
     private void Update()
     {
-        HandleTriggerButton();
-        Vector2 inputMovement = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick) * Vector2.up;
-        rJoystickYInput = inputMovement.y;
+        // HandleTriggerButton();
+        // Vector2 inputMovement = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick) * Vector2.up;
+        // rJoystickYInput = inputMovement.y;
+        HandleAButton();
+    }
+    private void HandleAButton()
+    {
+        bool isPressed = OVRInput.GetDown(OVRInput.Button.One);
+        bool isReleased = OVRInput.GetUp(OVRInput.Button.One);
+        if (isPressed) {
+            Debug.Log("Start recording");
+            VoiceRecognitionManager.Instance.TriggerStartRecording();
+        }
+        if (isReleased) {
+            Debug.Log("Stop recording");
+            VoiceRecognitionManager.Instance.TriggerStopRecording();
+        }
     }
 
     private void HandleTriggerButton()

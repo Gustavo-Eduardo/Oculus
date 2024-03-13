@@ -139,6 +139,8 @@ PlayerSettings:
   bundleVersion: 0.1
   preloadedAssets:
   - {fileID: 11400000, guid: f63a87b9cc42cf541ba7ac0a303affc3, type: 2}
+  - {fileID: -8039215821577926824, guid: 47e65db90616bf94fb49b5c3eeb64a2d, type: 2}
+  - {fileID: 11400000, guid: 18143f18e1354b54987cbe94e3df74c3, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -969,4 +971,4 @@ PlayerSettings:
   hmiLoadingImage: {fileID: 0}
   platformRequiresReadableAssets: 0
   virtualTexturingSupportEnabled: 0
-  insecureHttpOption: 0
+  insecureHttpOption: 2
