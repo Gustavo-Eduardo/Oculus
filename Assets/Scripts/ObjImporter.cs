@@ -8,6 +8,7 @@ using UnityGLTF;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Oculus.Interaction;
+using GLTFast;
 
 public class ObjImporter : MonoBehaviour
 {
@@ -86,20 +87,20 @@ public class ObjImporter : MonoBehaviour
         Debug.Log($"Polling complete, attempting download model");
 
         // string apiUrl = $"https://projectmw.s3.us-east-2.amazonaws.com/godmode/models/tmp6jt9ud19.glb"; // Adjust this according to your API
-        UnityWebRequest www = UnityWebRequest.Get(apiUrl);
-        yield return www.SendWebRequest();
+        // UnityWebRequest www = UnityWebRequest.Get(apiUrl);
+        // yield return www.SendWebRequest();
 
-        if (www.result != UnityWebRequest.Result.Success)
-        {
-            Debug.LogError("API request failed: " + www.error);
-            yield break;
-        }
+        // if (www.result != UnityWebRequest.Result.Success)
+        // {
+        //     Debug.LogError("API request failed: " + www.error);
+        //     yield break;
+        // }
 
-        string glbFilePath = Path.Combine(Application.persistentDataPath, "DownloadedObjects", $"{word}.glb");
-        Directory.CreateDirectory(Path.GetDirectoryName(glbFilePath));
-        File.WriteAllBytes(glbFilePath, www.downloadHandler.data);
+        // string glbFilePath = Path.Combine(Application.persistentDataPath, "DownloadedObjects", $"{word}.glb");
+        // Directory.CreateDirectory(Path.GetDirectoryName(glbFilePath));
+        // File.WriteAllBytes(glbFilePath, www.downloadHandler.data);
 
-        var glbObject = ImportGLB(glbFilePath);
+        var glbObject = ImportGLB(apiUrl);
 
         glbObject.transform.position = spawnPosition;
     }
@@ -108,13 +109,13 @@ public class ObjImporter : MonoBehaviour
     {
         // Instantiate the GLTFComponent on an empty GameObject
         GameObject gltfObject = new GameObject("GLTF Object");
-        var gltfComponent = gltfObject.AddComponent<GLTFComponent>();
+        var gltfComponent = gltfObject.AddComponent<GLTFast.GltfAsset>();
 
         // Set the GLTFComponent's uri to the path of the downloaded file
-        gltfComponent.GLTFUri = glbFilePath;
+        gltfComponent.Url = glbFilePath;
 
         // Start loading the GLB file. The GLTFComponent will handle the instantiation.
-        gltfComponent.Load();
+        // gltfComponent.Load();
 
         gltfObject.AddComponent<BoxCollider>();
         Rigidbody rigidbody = gltfObject.AddComponent<Rigidbody>();
