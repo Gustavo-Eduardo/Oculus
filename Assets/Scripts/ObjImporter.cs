@@ -1,18 +1,17 @@
-using System.Collections;
-using UnityEngine;
-using UnityEngine.Networking;
-using System.IO;
-using TMPro;
 using System;
-using UnityGLTF;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using GLTFast;
 using Newtonsoft.Json;
 using Oculus.Interaction;
-using GLTFast;
+using TMPro;
+using UnityEngine;
+using UnityEngine.Networking;
+using UnityGLTF;
 
 public class ObjImporter : MonoBehaviour
 {
-
     public void ImportObject(string text, Vector3 spawnPosition)
     {
         StartCoroutine(LoadObjectCoroutine(text, spawnPosition));
@@ -22,13 +21,13 @@ public class ObjImporter : MonoBehaviour
     {
         // Step 1: Make API Request to http://localhost:3001/godmode/object-image?word=banana
         // string word = "banana";
-        string firstApiUrl = $"https://memorywarserver.herokuapp.com/godmode/object-image?word={word}";
+        string firstApiUrl =
+            $"https://memorywarserver.herokuapp.com/godmode/object-image?word={word}";
         UnityWebRequest firstRequest = UnityWebRequest.Get(firstApiUrl);
         yield return firstRequest.SendWebRequest();
 
         if (firstRequest.result != UnityWebRequest.Result.Success)
         {
-
             Debug.LogError("Step 1 API request failed: " + firstRequest.error);
             yield break;
         }
@@ -38,7 +37,6 @@ public class ObjImporter : MonoBehaviour
 
         Debug.Log($"Received ID, attempting polling: {objectId}");
 
-
         // Step 3: Polling for object conversion
         string pollingUrl = "http://52.53.194.213:8000/api/conversions/";
         bool conversionCompleted = false;
@@ -47,7 +45,6 @@ public class ObjImporter : MonoBehaviour
         while (!conversionCompleted)
         {
             Debug.Log($"Polling");
-
 
             UnityWebRequest pollingRequest = UnityWebRequest.Get(pollingUrl);
 
@@ -81,58 +78,64 @@ public class ObjImporter : MonoBehaviour
                 yield return new WaitForSeconds(1); // Polling interval
         }
 
-
         // Step 5: Replace apiUrl Below
         string apiUrl = outputFileUrl;
         Debug.Log($"Polling complete, attempting download model");
 
         // string apiUrl = $"https://projectmw.s3.us-east-2.amazonaws.com/godmode/models/tmp6jt9ud19.glb"; // Adjust this according to your API
-        // UnityWebRequest www = UnityWebRequest.Get(apiUrl);
-        // yield return www.SendWebRequest();
+        UnityWebRequest www = UnityWebRequest.Get(apiUrl);
+        yield return www.SendWebRequest();
 
-        // if (www.result != UnityWebRequest.Result.Success)
-        // {
-        //     Debug.LogError("API request failed: " + www.error);
-        //     yield break;
-        // }
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("API request failed: " + www.error);
+            yield break;
+        }
 
         // string glbFilePath = Path.Combine(Application.persistentDataPath, "DownloadedObjects", $"{word}.glb");
         // Directory.CreateDirectory(Path.GetDirectoryName(glbFilePath));
         // File.WriteAllBytes(glbFilePath, www.downloadHandler.data);
 
-        var glbObject = ImportGLB(apiUrl);
-
-        glbObject.transform.position = spawnPosition;
+        ImportGLB(www.downloadHandler.data, apiUrl, spawnPosition);
     }
 
-    private GameObject ImportGLB(string glbFilePath)
+    private async void ImportGLB(byte[] data, string url, Vector3 spawnPosition)
     {
+        var gltf = new GltfImport();
+        bool success = await gltf.LoadGltfBinary(
+            data,
+            // The URI of the original data is important for resolving relative URIs within the glTF
+            new Uri(url)
+        );
+        if (success)
+        {
+            GameObject gltfObject = new GameObject("GLTF Object");
+            await gltf.InstantiateMainSceneAsync(gltfObject.transform);
+            // var gltfComponent = gltfObject.AddComponent<GLTFast.GltfAsset>();
+
+            // Set the GLTFComponent's uri to the path of the downloaded file
+            // gltfComponent.Url = glbFilePath;
+
+            // Start loading the GLB file. The GLTFComponent will handle the instantiation.
+            // gltfComponent.Load();
+
+            gltfObject.AddComponent<BoxCollider>();
+            Rigidbody rigidbody = gltfObject.AddComponent<Rigidbody>();
+            Grabbable grabbable = gltfObject.AddComponent<Grabbable>();
+
+            GrabInteractable grabInteractable = gltfObject.AddComponent<GrabInteractable>();
+            grabInteractable.InjectOptionalPointableElement(grabbable);
+            grabInteractable.InjectRigidbody(rigidbody);
+
+            ImportedObjectController objectController =
+                gltfObject.AddComponent<ImportedObjectController>();
+
+            // XRGrabInteractable xRGrab = obj.AddComponent<XRGrabInteractable>();
+            // xRGrab.useDynamicAttach = true;
+            gltfObject.transform.localScale = gltfObject.transform.localScale * 0.5f;
+            gltfObject.transform.position = spawnPosition;
+        }
         // Instantiate the GLTFComponent on an empty GameObject
-        GameObject gltfObject = new GameObject("GLTF Object");
-        var gltfComponent = gltfObject.AddComponent<GLTFast.GltfAsset>();
-
-        // Set the GLTFComponent's uri to the path of the downloaded file
-        gltfComponent.Url = glbFilePath;
-
-        // Start loading the GLB file. The GLTFComponent will handle the instantiation.
-        // gltfComponent.Load();
-
-        gltfObject.AddComponent<BoxCollider>();
-        Rigidbody rigidbody = gltfObject.AddComponent<Rigidbody>();
-        Grabbable grabbable = gltfObject.AddComponent<Grabbable>();
-        
-        GrabInteractable grabInteractable = gltfObject.AddComponent<GrabInteractable>();
-        grabInteractable.InjectOptionalPointableElement(grabbable);
-        grabInteractable.InjectRigidbody(rigidbody);
-
-        ImportedObjectController objectController =
-            gltfObject.AddComponent<ImportedObjectController>();
-
-        // XRGrabInteractable xRGrab = obj.AddComponent<XRGrabInteractable>();
-        // xRGrab.useDynamicAttach = true;
-        gltfObject.transform.localScale = gltfObject.transform.localScale * 0.5f;
-        // textObject.text = "Object generated";
-        return gltfObject;
     }
 
     [System.Serializable]
