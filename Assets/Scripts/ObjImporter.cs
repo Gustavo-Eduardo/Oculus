@@ -204,6 +204,10 @@ public class ObjImporter : MonoBehaviour
             physicsGrabbable.InjectPointable(grabbable);
             physicsGrabbable.InjectRigidbody(rigidbody);
 
+            GrabInteractable grabInteractable = gltfObject.AddComponent<GrabInteractable>();
+            grabInteractable.InjectOptionalPointableElement(grabbable);
+            grabInteractable.InjectRigidbody(rigidbody);
+
             HandGrabInteractable handGrabInteractable =
                 gltfObject.AddComponent<HandGrabInteractable>();
             handGrabInteractable.InjectOptionalPointableElement(grabbable);
