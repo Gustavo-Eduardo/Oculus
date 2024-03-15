@@ -19,84 +19,80 @@ public class ObjImporter : MonoBehaviour
 
     private IEnumerator LoadObjectCoroutine(string word, Vector3 spawnPosition)
     {
-        // Step 1: Make API Request to http://localhost:3001/godmode/object-image?word=banana
-        // string word = "banana";
-        string firstApiUrl =
-            $"https://memorywarserver.herokuapp.com/godmode/object-image?word={word}";
-        UnityWebRequest firstRequest = UnityWebRequest.Get(firstApiUrl);
-        yield return firstRequest.SendWebRequest();
-
-        if (firstRequest.result != UnityWebRequest.Result.Success)
+        // Step 2: Make API Request
+        // string apiUrl = $"https://projectmw.s3.us-east-2.amazonaws.com/godmode/models/tmppj9el8it.obj"; // Adjust this according to your API
+        
+        // Step 3: Handle Response
+        string objUrl = "https://projectmw.s3.us-east-2.amazonaws.com/godmode/models/tmppj9el8it.obj";
+        // string objUrl = "https://s3.filebin.net/filebin/9d3133bcdcf418a5dcd82e0400c14c92866a1003a9c0acec6e696e9f8f8ad038/e1310fee224e6431abdba7ce3c982bb32c2f0478364b1bfae77043cd2ad7bfb0?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=7pMj6hGeoKewqmMQILjm%2F20240310%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240310T201624Z&X-Amz-Expires=300&X-Amz-SignedHeaders=host&response-cache-control=max-age%3D300&response-content-disposition=filename%3D%22avatar.obj%22&response-content-type=text%2Fplain%3B%20charset%3Dutf-8&X-Amz-Signature=dd869518d9eb964bbb0a72fa81f59dd06d0e413cdb39504c3c8944d7d0e3563d";
+        // Step 4: Download the .obj File
+        UnityWebRequest objRequest = UnityWebRequest.Get(objUrl);
+        yield return objRequest.SendWebRequest();
+        if (objRequest.result != UnityWebRequest.Result.Success)
         {
-            Debug.LogError("Step 1 API request failed: " + firstRequest.error);
+            Debug.LogError("Failed to download .obj file: " + objRequest.error);
             yield break;
         }
+        Debug.Log($"Download Complete");
+        // Save .obj file to a folder outside the game directory
+        // Step 5: Import the .obj File
+        Debug.Log($"Instantiating");
+        // Step 6: Instantiate GameObject
+        InstantiateGameObjectFromOBJ(objRequest.downloadHandler.text, spawnPosition);
 
-        // Step 2: Request will return an id in string type
-        string objectId = firstRequest.downloadHandler.text.Trim();
+        // ImportGLB(www.downloadHandler.data, apiUrl, spawnPosition);
+    }
 
-        Debug.Log($"Received ID, attempting polling: {objectId}");
-
-        // Step 3: Polling for object conversion
-        string pollingUrl = "http://52.53.194.213:8000/api/conversions/";
-        bool conversionCompleted = false;
-        string outputFileUrl = "";
-
-        while (!conversionCompleted)
+    private void InstantiateGameObjectFromOBJ(string response, Vector3 spawnPosition)
+    {
+        // Read the .obj file
+        string[] lines = response.Split("\n");
+        List<Vector3> vertices = new List<Vector3>();
+        List<int> triangles = new List<int>();
+        foreach (string line in lines)
         {
-            Debug.Log($"Polling");
-
-            UnityWebRequest pollingRequest = UnityWebRequest.Get(pollingUrl);
-
-            string bearerToken = "8606e97a3516fb6f5ecefdf1db91bc286333ce14";
-            pollingRequest.SetRequestHeader("Authorization", "Token " + bearerToken);
-
-            yield return pollingRequest.SendWebRequest();
-
-            if (pollingRequest.result != UnityWebRequest.Result.Success)
+            string[] parts = line.Trim().Split(' ');
+            if (parts[0] == "v") // Vertex
             {
-                Debug.LogError("Step 3 API request failed: " + pollingRequest.error);
-                yield break;
+                float x = float.Parse(parts[1]);
+                float y = float.Parse(parts[2]);
+                float z = float.Parse(parts[3]);
+                vertices.Add(new Vector3(x, y, z));
             }
-
-            // Parse JSON response
-            string jsonText = pollingRequest.downloadHandler.text;
-            ConversionData[] conversionDataArray = JsonHelper.FromJson<ConversionData>(jsonText);
-
-            // Step 4: Check if identified object has "output_file" field which is a URL
-            foreach (var data in conversionDataArray)
+            else if (parts[0] == "f") // Face
             {
-                if (data.identifier == objectId && !string.IsNullOrEmpty(data.output_file))
+                for (int i = 1; i < parts.Length; i++)
                 {
-                    conversionCompleted = true;
-                    outputFileUrl = data.output_file;
-                    break;
+                    string[] indices = parts[i].Split('/');
+                    int vertexIndex = int.Parse(indices[0]) - 1; // OBJ indices start from 1
+                    triangles.Add(vertexIndex);
                 }
             }
-
-            if (!conversionCompleted)
-                yield return new WaitForSeconds(1); // Polling interval
         }
+        // Create GameObject
+        GameObject obj = new GameObject("OBJObject");
+        Mesh mesh = new Mesh();
+        mesh.vertices = vertices.ToArray();
+        mesh.triangles = triangles.ToArray();
+        mesh.RecalculateNormals();
+        MeshFilter meshFilter = obj.AddComponent<MeshFilter>();
+        meshFilter.mesh = mesh;
+        MeshRenderer meshRenderer = obj.AddComponent<MeshRenderer>();
+        meshRenderer.material = new Material(Shader.Find("Standard"));
+        obj.AddComponent<BoxCollider>();
+        Rigidbody rigidbody = obj.AddComponent<Rigidbody>();
+        Grabbable grabbable = obj.AddComponent<Grabbable>();
 
-        // Step 5: Replace apiUrl Below
-        string apiUrl = outputFileUrl;
-        Debug.Log($"Polling complete, attempting download model");
+        GrabInteractable grabInteractable = obj.AddComponent<GrabInteractable>();
+        grabInteractable.InjectOptionalPointableElement(grabbable);
+        grabInteractable.InjectRigidbody(rigidbody);
 
-        // string apiUrl = $"https://projectmw.s3.us-east-2.amazonaws.com/godmode/models/tmp6jt9ud19.glb"; // Adjust this according to your API
-        UnityWebRequest www = UnityWebRequest.Get(apiUrl);
-        yield return www.SendWebRequest();
+        ImportedObjectController objectController = obj.AddComponent<ImportedObjectController>();
 
-        if (www.result != UnityWebRequest.Result.Success)
-        {
-            Debug.LogError("API request failed: " + www.error);
-            yield break;
-        }
-
-        // string glbFilePath = Path.Combine(Application.persistentDataPath, "DownloadedObjects", $"{word}.glb");
-        // Directory.CreateDirectory(Path.GetDirectoryName(glbFilePath));
-        // File.WriteAllBytes(glbFilePath, www.downloadHandler.data);
-
-        ImportGLB(www.downloadHandler.data, apiUrl, spawnPosition);
+        // XRGrabInteractable xRGrab = obj.AddComponent<XRGrabInteractable>();
+        // xRGrab.useDynamicAttach = true;
+        obj.transform.localScale = obj.transform.localScale * 0.5f;
+        obj.transform.position = spawnPosition;
     }
 
     private async void ImportGLB(byte[] data, string url, Vector3 spawnPosition)
