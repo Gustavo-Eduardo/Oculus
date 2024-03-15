@@ -16,10 +16,11 @@ public class ColorChange : MonoBehaviour
 
     private void ActivateColor(object sender, EventArgs ev)
     {
-        meshRenderer.material.color = Color.red;
+        meshRenderer.material.SetColor("testColor", Color.red);
     }
+
     private void DeactivateColor(object sender, EventArgs ev)
     {
-        meshRenderer.material.color = Color.white;
+        meshRenderer.material.SetColor("testColor", Color.white);
     }
 }
