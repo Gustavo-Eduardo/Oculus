@@ -6,21 +6,26 @@ using UnityEngine;
 public class ColorChange : MonoBehaviour
 {
     [SerializeField]
+    private InputManager inputManager;
+
+    [SerializeField]
     private MeshRenderer meshRenderer;
 
-    private void Awake()
+    private void Start()
     {
-        VoiceRecognitionManager.Instance.OnStartRecording += ActivateColor;
-        VoiceRecognitionManager.Instance.OnStopRecording += DeactivateColor;
+        inputManager.Input_OnPressA += ActivateColor;
+        inputManager.Input_OnReleaseA += DeactivateColor;
     }
 
-    private void ActivateColor(object sender, EventArgs ev)
+    private void ActivateColor()
     {
-        meshRenderer.material.SetColor("testColor", Color.red);
+        Debug.Log("Activation color");
+        meshRenderer.material.color = Color.red;
     }
 
-    private void DeactivateColor(object sender, EventArgs ev)
+    private void DeactivateColor()
     {
-        meshRenderer.material.SetColor("testColor", Color.white);
+        Debug.Log("Deactivation color");
+        meshRenderer.material.color = Color.white;
     }
 }
