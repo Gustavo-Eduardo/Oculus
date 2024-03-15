@@ -5,6 +5,7 @@ using System.IO;
 using GLTFast;
 using Newtonsoft.Json;
 using Oculus.Interaction;
+using Oculus.Interaction.HandGrab;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -17,7 +18,7 @@ public class ObjImporter : MonoBehaviour
         StartCoroutine(LoadObjectCoroutine(text, spawnPosition));
     }
 
-    private IEnumerator LoadObjectCoroutineBU(string word, Vector3 spawnPosition)
+    private IEnumerator LoadObjectCoroutine(string word, Vector3 spawnPosition)
     {
         // Step 1: Make API Request to http://localhost:3001/godmode/object-image?word=banana
         // string word = "banana";
@@ -104,7 +105,7 @@ public class ObjImporter : MonoBehaviour
         ImportGLB(www.downloadHandler.data, apiUrl, spawnPosition);
     }
 
-    private IEnumerator LoadObjectCoroutine(string word, Vector3 spawnPosition)
+    private IEnumerator LoadObjectCoroutineBU(string word, Vector3 spawnPosition)
     {
         // Step 1: Make API Request to http://localhost:3001/godmode/object-image?word=banana
         // string word = "banana";
@@ -155,6 +156,10 @@ public class ObjImporter : MonoBehaviour
             GrabInteractable grabInteractable = gltfObject.AddComponent<GrabInteractable>();
             grabInteractable.InjectOptionalPointableElement(grabbable);
             grabInteractable.InjectRigidbody(rigidbody);
+
+            HandGrabInteractable handGrabInteractable = gltfObject.AddComponent<HandGrabInteractable>();
+            handGrabInteractable.InjectOptionalPointableElement(grabbable);
+            handGrabInteractable.InjectRigidbody(rigidbody);
 
             ImportedObjectController objectController =
                 gltfObject.AddComponent<ImportedObjectController>();

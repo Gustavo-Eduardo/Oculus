@@ -25,17 +25,13 @@ public class InputManager : MonoBehaviour
     {
         bool isPressed = OVRInput.GetDown(OVRInput.Button.One);
         bool isReleased = OVRInput.GetUp(OVRInput.Button.One);
-        // if (isPressed) {
-        //     Debug.Log("Start recording");
-        //     VoiceRecognitionManager.Instance.TriggerStartRecording();
-        // }
-        // if (isReleased) {
-        //     Debug.Log("Stop recording");
-        //     VoiceRecognitionManager.Instance.TriggerStopRecording();
-        // }
-        if (isReleased)
-        {
-            VoiceRecognitionManager.Instance.TriggerWord();
+        if (isPressed) {
+            Debug.Log("Start recording");
+            VoiceRecognitionManager.Instance.TriggerStartRecording();
+        }
+        if (isReleased) {
+            Debug.Log("Stop recording");
+            VoiceRecognitionManager.Instance.TriggerStopRecording();
         }
     }
 
