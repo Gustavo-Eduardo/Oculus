@@ -13,7 +13,22 @@ using UnityGLTF;
 
 public class ObjImporter : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject plane;
+    [SerializeField]
+    private TextMeshPro statusText;
     public event Action<Sprite> OnSourceImageGenerated;
+
+    private void Awake()
+    {
+        OnSourceImageGenerated += (Sprite sprite) =>
+        {
+            plane.GetComponent<SpriteRenderer>().sprite = sprite;
+            BoxCollider collider = plane.GetComponent<BoxCollider>();
+            collider.size = new Vector3(sprite.texture.width, sprite.texture.height, 1);
+        };
+    }
+
     public void ImportObject(string text, Vector3 spawnPosition)
     {
         StartCoroutine(LoadObjectCoroutine(text, spawnPosition));
@@ -30,6 +45,7 @@ public class ObjImporter : MonoBehaviour
 
         if (firstRequest.result != UnityWebRequest.Result.Success)
         {
+            statusText.text = "First request failed";
             Debug.LogError("Step 1 API request failed: " + firstRequest.error);
             yield break;
         }
@@ -45,6 +61,8 @@ public class ObjImporter : MonoBehaviour
         string sourceFileUrl = "";
         string outputFileUrl = "";
 
+        statusText.text = "Generating image";
+
         while (!conversionCompleted)
         {
             Debug.Log($"Polling");
@@ -59,6 +77,7 @@ public class ObjImporter : MonoBehaviour
             Debug.Log($"result: {pollingRequest.result}");
             if (pollingRequest.result != UnityWebRequest.Result.Success)
             {
+                statusText.text = "Generation failed";
                 Debug.LogError("Step 3 API request failed: " + pollingRequest.error);
                 yield break;
             }
@@ -93,11 +112,13 @@ public class ObjImporter : MonoBehaviour
                             Vector2.one * 0.5f
                         );
                         OnSourceImageGenerated?.Invoke(sprite);
+                        statusText.text = "Generating model";
                     }
                 }
                 if (data.identifier == objectId && !string.IsNullOrEmpty(data.output_file))
                 {
                     Debug.Log($"converstion completed");
+                    statusText.text = "Generation completed";
                     conversionCompleted = true;
                     outputFileUrl = data.output_file;
                     Debug.Log($"output file: {data.output_file}");
@@ -179,9 +200,9 @@ public class ObjImporter : MonoBehaviour
             Rigidbody rigidbody = gltfObject.AddComponent<Rigidbody>();
             Grabbable grabbable = gltfObject.AddComponent<Grabbable>();
 
-            GrabInteractable grabInteractable = gltfObject.AddComponent<GrabInteractable>();
-            grabInteractable.InjectOptionalPointableElement(grabbable);
-            grabInteractable.InjectRigidbody(rigidbody);
+            PhysicsGrabbable physicsGrabbable = gltfObject.AddComponent<PhysicsGrabbable>();
+            physicsGrabbable.InjectPointable(grabbable);
+            physicsGrabbable.InjectRigidbody(rigidbody);
 
             HandGrabInteractable handGrabInteractable =
                 gltfObject.AddComponent<HandGrabInteractable>();
