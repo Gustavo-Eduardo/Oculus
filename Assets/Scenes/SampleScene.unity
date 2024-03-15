@@ -884,7 +884,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &227333489
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1507,7 +1507,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &537083531
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2268,7 +2268,7 @@ MonoBehaviour:
   confirmText: {fileID: 227333488}
   cancelText: {fileID: 537083530}
   mainText: {fileID: 65284394}
-  inputManager: {fileID: 0}
+  inputManager: {fileID: 1088035922}
 --- !u!1 &1139468375
 GameObject:
   m_ObjectHideFlags: 0
