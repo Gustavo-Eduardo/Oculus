@@ -34,13 +34,13 @@ public class InputManager : MonoBehaviour
         if (isPressed)
         {
             Debug.Log("Start recording");
-            VoiceRecognitionManager.Instance.TriggerStartRecording();
+            VoiceRecognitionManager.Instance?.TriggerStartRecording();
             Input_OnPressA?.Invoke();
         }
         if (isReleased)
         {
             Debug.Log("Stop recording");
-            VoiceRecognitionManager.Instance.TriggerStopRecording();
+            VoiceRecognitionManager.Instance?.TriggerStopRecording();
             Input_OnReleaseA?.Invoke();
         }
     }
