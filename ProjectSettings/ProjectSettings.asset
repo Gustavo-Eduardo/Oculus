@@ -961,11 +961,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 07504e05-0af1-4fda-845c-ea87db26eb7e
+  cloudProjectId: 3c3d9b3e-7c78-4371-9d2b-43ea9109d97d
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Oculus 2024-03-12_09-29-17
-  organizationId: doxancito
+  projectName: Godmode
+  organizationId: commonzen
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
