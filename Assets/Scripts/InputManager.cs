@@ -7,6 +7,8 @@ using UnityEngine;
 public class InputManager : MonoBehaviour
 {
     public event Action Input_OnReleaseButton;
+    public event Action Input_OnPressX;
+    public event Action Input_OnPressY;
 
     private float rJoystickYInput;
     private bool pressingTrigger;
@@ -20,6 +22,8 @@ public class InputManager : MonoBehaviour
         // Vector2 inputMovement = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick) * Vector2.up;
         // rJoystickYInput = inputMovement.y;
         HandleAButton();
+        HandleXButton();
+        HandleYButton();
     }
     private void HandleAButton()
     {
@@ -32,6 +36,26 @@ public class InputManager : MonoBehaviour
         if (isReleased) {
             Debug.Log("Stop recording");
             VoiceRecognitionManager.Instance.TriggerStopRecording();
+        }
+    }
+    private void HandleXButton()
+    {
+        bool isPressed = OVRInput.GetUp(OVRInput.Button.Three);
+        if (isPressed) {
+            // VoiceRecognitionManager.Instance.TriggerStartRecording();
+            Debug.Log("Press X");
+            Input_OnPressX?.Invoke();
+        }
+    }
+    private void HandleYButton()
+    {
+        bool isPressed = OVRInput.GetUp(OVRInput.Button.Four);
+        if (isPressed) {
+            Debug.Log("Press Y");
+
+            // VoiceRecognitionManager.Instance.TriggerStartRecording();
+            Input_OnPressY?.Invoke();
+
         }
     }
 

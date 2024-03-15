@@ -16,13 +16,32 @@ public class ObjectGenerationConfirmation : MonoBehaviour
     private GameObject cancelText;
     [SerializeField]
     private TextMeshPro mainText;
+    [SerializeField]
+    private InputManager inputManager;
 
     private void Awake()
     {
-        PointableElement confirmPointable = confirmText.GetComponent<PointableElement>();
-        PointableElement cancelPointable = cancelText.GetComponent<PointableElement>();
-        confirmPointable.WhenPointerEventRaised += OnConfirm;
-        cancelPointable.WhenPointerEventRaised += OnCancel;
+        // PointableElement confirmPointable = confirmText.GetComponent<PointableElement>();
+        // PointableElement cancelPointable = cancelText.GetComponent<PointableElement>();
+        // confirmPointable.WhenPointerEventRaised += OnConfirm;
+        // cancelPointable.WhenPointerEventRaised += OnCancel;
+    }
+    private void Start() {
+         // TODO Refactor
+        inputManager.Input_OnPressX += delegate {
+            Debug.Log("Selected");
+            OnConfirmGeneration?.Invoke();
+            Delegate[] list = OnConfirmGeneration.GetInvocationList();
+            foreach (Action d in list)
+            {
+                OnConfirmGeneration -= d;
+            }
+            DeactivateConfirmation();
+        };
+        inputManager.Input_OnPressY += delegate {
+             Debug.Log("Canceled");
+            DeactivateConfirmation();
+        };
     }
 
     private void OnConfirm(PointerEvent ev)
