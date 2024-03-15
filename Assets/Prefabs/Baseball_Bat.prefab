@@ -247,7 +247,7 @@ MonoBehaviour:
     _pinkyRequirement: 1
     _unselectMode: 0
   _movementProvider: {fileID: 0}
-  _handAligment: 0
+  _handAligment: 1
   _handGrabPoses: []
 --- !u!114 &4793362130197194209
 MonoBehaviour:
@@ -286,7 +286,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _pointable: {fileID: 5891980213105207264}
   _rigidbody: {fileID: 1004984386921081441}
-  _scaleMassWithSize: 1
+  _scaleMassWithSize: 0
 --- !u!1 &8496413903021926812
 GameObject:
   m_ObjectHideFlags: 0
@@ -419,7 +419,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _pointable: {fileID: 632725056840138651}
   _rigidbody: {fileID: 1004984386921081441}
-  _scaleMassWithSize: 1
+  _scaleMassWithSize: 0
 --- !u!114 &7036962145483132779
 MonoBehaviour:
   m_ObjectHideFlags: 0
