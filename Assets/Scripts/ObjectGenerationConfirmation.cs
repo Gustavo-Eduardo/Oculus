@@ -58,7 +58,7 @@ public class ObjectGenerationConfirmation : MonoBehaviour
 
     public void DeactivateConfirmation()
     {
-        Debug.Log("Activating text cancel");
+        Debug.Log("Deactivating text confirm");
         confirmText.SetActive(false);
         cancelText.SetActive(false);
         mainText.text = "";

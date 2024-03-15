@@ -60,14 +60,21 @@ public class VoiceRecognitionManager : MonoBehaviour
         SendRecording();
     }
 
-    public void TriggerStartRecording() {
+    public void TriggerStartRecording()
+    {
         OnStartRecording?.Invoke(this, EventArgs.Empty);
     }
-    public void TriggerStopRecording() {
+    public void TriggerStopRecording()
+    {
         OnStopRecording?.Invoke(this, EventArgs.Empty);
     }
+    public void TriggerWord()
+    {
+        OnRequestDone?.Invoke("cow");
+    }
 
-    public bool IsRecording() {
+    public bool IsRecording()
+    {
         return recording;
     }
     private void SendRecording()

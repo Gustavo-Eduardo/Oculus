@@ -17,7 +17,7 @@ public class ObjImporter : MonoBehaviour
         StartCoroutine(LoadObjectCoroutine(text, spawnPosition));
     }
 
-    private IEnumerator LoadObjectCoroutine(string word, Vector3 spawnPosition)
+    private IEnumerator LoadObjectCoroutineBU(string word, Vector3 spawnPosition)
     {
         // Step 1: Make API Request to http://localhost:3001/godmode/object-image?word=banana
         // string word = "banana";
@@ -53,6 +53,7 @@ public class ObjImporter : MonoBehaviour
 
             yield return pollingRequest.SendWebRequest();
 
+            Debug.Log($"result: {pollingRequest.result}");
             if (pollingRequest.result != UnityWebRequest.Result.Success)
             {
                 Debug.LogError("Step 3 API request failed: " + pollingRequest.error);
@@ -60,6 +61,7 @@ public class ObjImporter : MonoBehaviour
             }
 
             // Parse JSON response
+            Debug.Log($"text: {pollingRequest.downloadHandler.text}");
             string jsonText = pollingRequest.downloadHandler.text;
             ConversionData[] conversionDataArray = JsonHelper.FromJson<ConversionData>(jsonText);
 
@@ -68,8 +70,11 @@ public class ObjImporter : MonoBehaviour
             {
                 if (data.identifier == objectId && !string.IsNullOrEmpty(data.output_file))
                 {
+                    Debug.Log($"converstion completed");
                     conversionCompleted = true;
                     outputFileUrl = data.output_file;
+                    Debug.Log($"output file: {data.output_file}");
+                    Debug.Log($"url {outputFileUrl}");
                     break;
                 }
             }
@@ -99,8 +104,30 @@ public class ObjImporter : MonoBehaviour
         ImportGLB(www.downloadHandler.data, apiUrl, spawnPosition);
     }
 
+    private IEnumerator LoadObjectCoroutine(string word, Vector3 spawnPosition)
+    {
+        // Step 1: Make API Request to http://localhost:3001/godmode/object-image?word=banana
+        // string word = "banana";
+        string firstApiUrl =
+            $"https://projectmw.s3.us-east-2.amazonaws.com/godmode/models/tmp6jt9ud19.glb";
+        UnityWebRequest firstRequest = UnityWebRequest.Get(firstApiUrl);
+        Debug.Log("Sending request");
+        yield return firstRequest.SendWebRequest();
+
+        if (firstRequest.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("Step 1 API request failed: " + firstRequest.error);
+            yield break;
+        }
+
+        Debug.Log("Request done");
+        // Step 2: Request will return an id in string type
+        ImportGLB(firstRequest.downloadHandler.data, firstApiUrl, spawnPosition);
+    }
+
     private async void ImportGLB(byte[] data, string url, Vector3 spawnPosition)
     {
+        Debug.Log("Importing object");
         var gltf = new GltfImport();
         bool success = await gltf.LoadGltfBinary(
             data,
@@ -109,8 +136,10 @@ public class ObjImporter : MonoBehaviour
         );
         if (success)
         {
+            Debug.Log("Object loaded");
+
             GameObject gltfObject = new GameObject("GLTF Object");
-            await gltf.InstantiateMainSceneAsync(gltfObject.transform);
+            Debug.Log("Adding components");
             // var gltfComponent = gltfObject.AddComponent<GLTFast.GltfAsset>();
 
             // Set the GLTFComponent's uri to the path of the downloaded file
@@ -134,6 +163,9 @@ public class ObjImporter : MonoBehaviour
             // xRGrab.useDynamicAttach = true;
             gltfObject.transform.localScale = gltfObject.transform.localScale * 0.5f;
             gltfObject.transform.position = spawnPosition;
+
+            Debug.Log("Instantiating Model");
+            await gltf.InstantiateMainSceneAsync(gltfObject.transform);
         }
         // Instantiate the GLTFComponent on an empty GameObject
     }
