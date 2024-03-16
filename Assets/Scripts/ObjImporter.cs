@@ -37,6 +37,15 @@ public class ObjImporter : MonoBehaviour
         };
     }
 
+    private void updateCurrentInstantiatedMesh(GameObject instantiateMesh)
+    {
+        currentInstantiatedMesh = instantiateMesh;
+    }
+
+    public void TriggerImageGeneratedEvent(Sprite sprite) {
+        OnSourceImageGenerated?.Invoke(sprite);
+     }
+
     private void Update()
     {
         if (currentInstantiatedMesh != null)
@@ -53,7 +62,8 @@ public class ObjImporter : MonoBehaviour
 
     public void ImportObject(string text, Vector3 spawnPosition)
     {
-        if (currentSpawnCircle != null) {
+        if (currentSpawnCircle != null)
+        {
             Destroy(currentSpawnCircle);
         }
         GameObject selector = Instantiate(selectorPrefab);
@@ -210,7 +220,7 @@ public class ObjImporter : MonoBehaviour
         ImportGLB(firstRequest.downloadHandler.data, firstApiUrl, spawnPosition);
     }
 
-    private async void ImportGLB(byte[] data, string url, Vector3 spawnPosition)
+    public async void ImportGLB(byte[] data, string url, Vector3 spawnPosition)
     {
         Debug.Log("Importing object");
         var gltf = new GltfImport();
