@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using DreamXR.Interaction;
 using GLTFast;
 using Newtonsoft.Json;
 using Oculus.Interaction;
@@ -233,6 +234,9 @@ public class ObjImporter : MonoBehaviour
                 gltfObject.AddComponent<HandGrabInteractable>();
             handGrabInteractable.InjectOptionalPointableElement(grabbable);
             handGrabInteractable.InjectRigidbody(rigidbody);
+
+            
+                gltfObject.AddComponent<HitObject>();
 
             ImportedObjectController objectController =
                 gltfObject.AddComponent<ImportedObjectController>();

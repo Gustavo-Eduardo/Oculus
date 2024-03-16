@@ -11,6 +11,7 @@ Library: /Users/zendev/code/Oculus/Temp/BurstOutput/tempburstlibs/arm64-v8a/lib_
 --assembly-defines=glTFast;
 --assembly-defines=GLTFSerialization;
 --assembly-defines=HuggingFaceAPI;
+--assembly-defines=Meta.XR.Audio;
 --assembly-defines=Meta.XR.BuildingBlocks;
 --assembly-defines=meta.xr.mrutilitykit;
 --assembly-defines=Mono.Security;
