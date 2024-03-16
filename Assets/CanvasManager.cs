@@ -35,7 +35,6 @@ public class CanvasManager : MonoBehaviour
             Debug.Log("Collision");
             SurfaceHit collision = rayInteractor.CollisionInfo.Value;
             Vector3 hitPosition = collision.Point + Vector3.up;
-
             // TODO: Handle case when there is no collision
             generationConfirmation.ActivateConfirmation();
 

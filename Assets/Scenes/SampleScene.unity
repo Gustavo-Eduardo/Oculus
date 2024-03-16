@@ -537,6 +537,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   plane: {fileID: 2068160180}
+  selectorPrefab: {fileID: 4221279416801867171, guid: 993da69eed4ce2e47bc07e5fc7339cea, type: 3}
   statusText: {fileID: 241241889}
 --- !u!4 &114714353
 Transform:
@@ -2445,7 +2446,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Version 1.0.9
+  m_text: Version 1.0.10
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

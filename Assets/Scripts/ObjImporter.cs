@@ -17,8 +17,12 @@ public class ObjImporter : MonoBehaviour
     private GameObject plane;
 
     [SerializeField]
+    private GameObject selectorPrefab;
+
+    [SerializeField]
     private TextMeshPro statusText;
     public event Action<Sprite> OnSourceImageGenerated;
+    public event Action OnModelGenerated;
 
     private void Awake()
     {
@@ -32,6 +36,15 @@ public class ObjImporter : MonoBehaviour
 
     public void ImportObject(string text, Vector3 spawnPosition)
     {
+        GameObject selector = Instantiate(selectorPrefab);
+        selector.transform.position = spawnPosition - Vector3.up + Vector3.up * 0.01f;
+        OnModelGenerated += delegate
+        {
+            if (selector != null)
+            {
+                Destroy(selector);
+            }
+        };
         StartCoroutine(LoadObjectCoroutine(text, spawnPosition));
     }
 
@@ -210,7 +223,8 @@ public class ObjImporter : MonoBehaviour
             grabInteractable.InjectOptionalPointableElement(grabbable);
             grabInteractable.InjectRigidbody(rigidbody);
 
-            DistanceGrabInteractable distanceGrabInteractable = gltfObject.AddComponent<DistanceGrabInteractable>();
+            DistanceGrabInteractable distanceGrabInteractable =
+                gltfObject.AddComponent<DistanceGrabInteractable>();
             distanceGrabInteractable.InjectOptionalPointableElement(grabbable);
             distanceGrabInteractable.InjectRigidbody(rigidbody);
 
@@ -229,6 +243,7 @@ public class ObjImporter : MonoBehaviour
 
             Debug.Log("Instantiating Model");
             await gltf.InstantiateMainSceneAsync(gltfObject.transform);
+            OnModelGenerated?.Invoke();
         }
         // Instantiate the GLTFComponent on an empty GameObject
     }
