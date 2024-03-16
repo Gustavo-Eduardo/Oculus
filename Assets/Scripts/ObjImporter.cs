@@ -24,6 +24,8 @@ public class ObjImporter : MonoBehaviour
     private TextMeshPro statusText;
     public event Action<Sprite> OnSourceImageGenerated;
     public event Action OnModelGenerationFinished;
+    private GameObject currentInstantiatedMesh;
+    private GameObject currentSpawnCircle;
 
     private void Awake()
     {
@@ -35,9 +37,27 @@ public class ObjImporter : MonoBehaviour
         };
     }
 
+    private void Update()
+    {
+        if (currentInstantiatedMesh != null)
+        {
+            bool pressedB = OVRInput.GetUp(OVRInput.Button.Two);
+            ImportedObjectController controller =
+                currentInstantiatedMesh.GetComponent<ImportedObjectController>();
+            if (!controller.IsSelected() && pressedB)
+            {
+                controller.RespawnObject();
+            }
+        }
+    }
+
     public void ImportObject(string text, Vector3 spawnPosition)
     {
+        if (currentSpawnCircle != null) {
+            Destroy(currentSpawnCircle);
+        }
         GameObject selector = Instantiate(selectorPrefab);
+        currentSpawnCircle = selector;
         selector.transform.position = spawnPosition - Vector3.up + Vector3.up * 0.01f;
         OnModelGenerationFinished += delegate
         {
@@ -235,11 +255,11 @@ public class ObjImporter : MonoBehaviour
             handGrabInteractable.InjectOptionalPointableElement(grabbable);
             handGrabInteractable.InjectRigidbody(rigidbody);
 
-            
-                gltfObject.AddComponent<HitObject>();
+            gltfObject.AddComponent<HitObject>();
 
             ImportedObjectController objectController =
                 gltfObject.AddComponent<ImportedObjectController>();
+            objectController.SetInitialPosition(spawnPosition);
 
             // XRGrabInteractable xRGrab = obj.AddComponent<XRGrabInteractable>();
             // xRGrab.useDynamicAttach = true;
@@ -249,6 +269,7 @@ public class ObjImporter : MonoBehaviour
             Debug.Log("Instantiating Model");
             await gltf.InstantiateMainSceneAsync(gltfObject.transform);
             OnModelGenerationFinished?.Invoke();
+            currentInstantiatedMesh = gltfObject;
         }
         // Instantiate the GLTFComponent on an empty GameObject
     }

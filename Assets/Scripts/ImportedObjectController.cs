@@ -13,12 +13,26 @@ public class ImportedObjectController : MonoBehaviour
     private Rigidbody _rigidbody;
     private Grabbable _grabbable;
     private bool isSelected = false;
+    private Vector3 initialPosition;
 
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _grabbable = GetComponent<Grabbable>();
         _grabbable.WhenPointerEventRaised += HandleEvent;
+    }
+
+    public void SetInitialPosition(Vector3 position)
+    {
+        initialPosition = position;
+    }
+
+    public void RespawnObject() {
+        transform.position = initialPosition;
+    }
+
+    public bool IsSelected() {
+        return isSelected;
     }
 
     private void Update()
