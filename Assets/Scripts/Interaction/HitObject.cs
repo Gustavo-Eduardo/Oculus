@@ -13,10 +13,10 @@ namespace DreamXR.Interaction {
                     autoDestroyCoroutine = StartCoroutine(AutoDestroyCoroutine());
                 }
             } else {
-                if (autoDestroyCoroutine != null) {
-                    // If we've hitted something else after bat hit.
-                    Destroy(gameObject);
-                }
+                // if (autoDestroyCoroutine != null) {
+                //     // If we've hitted something else after bat hit.
+                //     Destroy(gameObject);
+                // }
             }
         }
 

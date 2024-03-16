@@ -16,7 +16,7 @@ namespace DreamXR.Interaction {
         private const float LINEAR_VELOCITY_MULTIPLIER = 1.5f;
         private const float ANGULAR_VELOCITY_MULTIPLIER = 0.5f;
         // Anything hit above this magnitude threshold with the bat will be instantly destroyed.
-        private const float LINEAR_VELOCITY_MAGNITUDE_THRESHOLD_FOR_DESTRUCTION = 50f;
+        private const float LINEAR_VELOCITY_MAGNITUDE_THRESHOLD_FOR_DESTRUCTION = 500f;
         // The index of the last velocity frame stored.
         int currentVelocityFrameIndex = 0;
         // These dictionaries keep last STORE_THROWING_FRAMES_COUNT of throwing frames data to better calculate

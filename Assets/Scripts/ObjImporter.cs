@@ -245,6 +245,7 @@ public class ObjImporter : MonoBehaviour
 
             gltfObject.AddComponent<BoxCollider>();
             Rigidbody rigidbody = gltfObject.AddComponent<Rigidbody>();
+            rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             Grabbable grabbable = gltfObject.AddComponent<Grabbable>();
 
             PhysicsGrabbable physicsGrabbable = gltfObject.AddComponent<PhysicsGrabbable>();
