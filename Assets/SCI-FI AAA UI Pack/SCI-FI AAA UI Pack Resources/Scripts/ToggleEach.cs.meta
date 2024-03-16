@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 97eb6fbd2b39bd4409f3f1db3b92d1a8
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 209328
+  packageName: SCI-FI AAA UI PACK
+  packageVersion: 1.0
+  assetPath: Assets/SCI-FI AAA UI Pack/SCI-FI AAA UI Pack Resources/Scripts/ToggleEach.cs
+  uploadId: 470027

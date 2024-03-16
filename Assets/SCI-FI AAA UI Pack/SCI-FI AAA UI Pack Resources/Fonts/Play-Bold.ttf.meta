@@ -1,0 +1,30 @@
+fileFormatVersion: 2
+guid: 4f6c2553ff47507429d055cb51f7fcea
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Play
+  fontNames:
+  - Play
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: c43b6dd460e362a428f72941a3390402, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 209328
+  packageName: SCI-FI AAA UI PACK
+  packageVersion: 1.0
+  assetPath: Assets/SCI-FI AAA UI Pack/SCI-FI AAA UI Pack Resources/Fonts/Play-Bold.ttf
+  uploadId: 470027

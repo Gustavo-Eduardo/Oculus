@@ -1,0 +1,29 @@
+fileFormatVersion: 2
+guid: 77420fc72e0e4a84aa41afb3b28f8d9f
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Aldrich
+  fontNames:
+  - Aldrich
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 209328
+  packageName: SCI-FI AAA UI PACK
+  packageVersion: 1.0
+  assetPath: Assets/SCI-FI AAA UI Pack/SCI-FI AAA UI Pack Resources/Fonts/Aldrich-Regular.ttf
+  uploadId: 470027

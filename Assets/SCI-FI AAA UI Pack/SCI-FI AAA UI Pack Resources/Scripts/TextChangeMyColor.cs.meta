@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 602e9abd890f66942bda990128c836d7
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 209328
+  packageName: SCI-FI AAA UI PACK
+  packageVersion: 1.0
+  assetPath: Assets/SCI-FI AAA UI Pack/SCI-FI AAA UI Pack Resources/Scripts/TextChangeMyColor.cs
+  uploadId: 470027

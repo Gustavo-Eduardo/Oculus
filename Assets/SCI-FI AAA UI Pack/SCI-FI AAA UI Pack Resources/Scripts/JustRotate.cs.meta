@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: eba6c04475f0a3644bbbcad71d3f4b88
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 209328
+  packageName: SCI-FI AAA UI PACK
+  packageVersion: 1.0
+  assetPath: Assets/SCI-FI AAA UI Pack/SCI-FI AAA UI Pack Resources/Scripts/JustRotate.cs
+  uploadId: 470027
