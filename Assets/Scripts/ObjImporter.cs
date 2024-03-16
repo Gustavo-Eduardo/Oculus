@@ -95,8 +95,10 @@ public class ObjImporter : MonoBehaviour
         }
 
         statusText.text = "First request failed";
+        ServerResponse response = JsonConvert.DeserializeObject(firstRequest.downloadHandler.text) as ServerResponse;
         // Step 2: Request will return an id in string type
-        string objectId = firstRequest.downloadHandler.text.Trim();
+        string objectId = response.id;
+        string sound = response.sound;
 
         Debug.Log($"Received ID, attempting polling: {objectId}");
 
@@ -294,6 +296,13 @@ public class ObjImporter : MonoBehaviour
         public string started_at;
         public string finished_at;
         public string duration;
+    }
+    
+    [System.Serializable]
+    public class ServerResponse
+    {
+        public string id;
+        public string sound;
     }
 }
 
