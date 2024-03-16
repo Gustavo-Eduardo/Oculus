@@ -49,6 +49,7 @@ namespace DreamXR.Interaction {
             if (other.gameObject.TryGetComponent<Rigidbody>(out var otherRigidBody)) {
                 otherRigidBody.velocity = _throwLinearVelocity * LINEAR_VELOCITY_MULTIPLIER;
                 otherRigidBody.angularVelocity = -_throwAngularVelocity * ANGULAR_VELOCITY_MULTIPLIER;
+                ParticleManager.PlayAndFollow("SpikyFireTrail", other.transform);
             }
         }
 
