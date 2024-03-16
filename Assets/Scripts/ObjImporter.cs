@@ -22,7 +22,7 @@ public class ObjImporter : MonoBehaviour
     [SerializeField]
     private TextMeshPro statusText;
     public event Action<Sprite> OnSourceImageGenerated;
-    public event Action OnModelGenerated;
+    public event Action OnModelGenerationFinished;
 
     private void Awake()
     {
@@ -38,7 +38,7 @@ public class ObjImporter : MonoBehaviour
     {
         GameObject selector = Instantiate(selectorPrefab);
         selector.transform.position = spawnPosition - Vector3.up + Vector3.up * 0.01f;
-        OnModelGenerated += delegate
+        OnModelGenerationFinished += delegate
         {
             if (selector != null)
             {
@@ -59,7 +59,6 @@ public class ObjImporter : MonoBehaviour
 
         if (firstRequest.result != UnityWebRequest.Result.Success)
         {
-            statusText.text = "First request failed";
             Debug.LogError("Step 1 API request failed: " + firstRequest.error);
             yield break;
         }
@@ -94,6 +93,7 @@ public class ObjImporter : MonoBehaviour
             {
                 statusText.text = "Generation failed";
                 Debug.LogError("Step 3 API request failed: " + pollingRequest.error);
+                OnModelGenerationFinished?.Invoke();
                 yield break;
             }
 
@@ -157,6 +157,7 @@ public class ObjImporter : MonoBehaviour
         if (www.result != UnityWebRequest.Result.Success)
         {
             Debug.LogError("API request failed: " + www.error);
+            OnModelGenerationFinished?.Invoke();
             yield break;
         }
 
@@ -243,7 +244,7 @@ public class ObjImporter : MonoBehaviour
 
             Debug.Log("Instantiating Model");
             await gltf.InstantiateMainSceneAsync(gltfObject.transform);
-            OnModelGenerated?.Invoke();
+            OnModelGenerationFinished?.Invoke();
         }
         // Instantiate the GLTFComponent on an empty GameObject
     }
