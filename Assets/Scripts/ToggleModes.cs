@@ -7,21 +7,28 @@ public class ToggleModes : MonoBehaviour
     [SerializeField] GameObject zenModeImage;
     [SerializeField] GameObject destructionModeImage;
     [SerializeField] InputManager inputManager;
+    [SerializeField] List<GameObject> zenGameObjects;
+    [SerializeField] List<GameObject> destructionGameObjects;
     private bool isZenMode = true;
 
-    private void Start() {
-        inputManager.Input_OnPressX += ToggleMode;
-    }
-
     public void SetZenMode(bool zenMode) {
-        isZenMode = zenMode;        
+        ToggleMode(zenMode);
     }
 
-    private void ToggleMode() {
-        isZenMode = !isZenMode;
+    private void ToggleMode(bool zenMode) {
+        isZenMode = zenMode;
+        foreach (GameObject go in zenGameObjects) {
+            go.SetActive(isZenMode);
+        }
+        foreach (GameObject go in destructionGameObjects) {
+            go.SetActive(!isZenMode);
+        }
     }
 
     private void Update() {
+        if (OVRInput.GetUp(OVRInput.Button.SecondaryThumbstick)) {
+            ToggleMode(!isZenMode);
+        }
         destructionModeImage.SetActive(!isZenMode);
         zenModeImage.SetActive(isZenMode);
     }
