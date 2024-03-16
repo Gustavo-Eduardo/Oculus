@@ -11,6 +11,7 @@ namespace DreamXR.Interaction {
         public GameObject leftHandGrabAnchor;
         [Tooltip("The right hand grab anchor. This is the capsule collider in hand called 'GrabVolumeBig'")]
         public GameObject rightHandGrabAnchor;
+        [SerializeField] private AudioSource audioSource;
 
         private const int STORE_THROWING_FRAMES_COUNT = 10;
         private const float LINEAR_VELOCITY_MULTIPLIER = 1.5f;
@@ -50,6 +51,7 @@ namespace DreamXR.Interaction {
 
         private void OnCollisionEnter(Collision other) {
             if (other.gameObject.TryGetComponent<Rigidbody>(out var otherRigidBody)) {
+                audioSource.Play();
                 Vector3 totalLinearVelocity = _throwAngularVelocity * LINEAR_VELOCITY_MULTIPLIER;
                 if (totalLinearVelocity.magnitude >= LINEAR_VELOCITY_MAGNITUDE_THRESHOLD_FOR_DESTRUCTION) {
                     // If hit is too hard, the hitted object is instantly destroyed.
