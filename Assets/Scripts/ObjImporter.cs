@@ -91,14 +91,18 @@ public class ObjImporter : MonoBehaviour
         if (firstRequest.result != UnityWebRequest.Result.Success)
         {
             Debug.LogError("Step 1 API request failed: " + firstRequest.error);
+        statusText.text = "First request failed";
             yield break;
         }
 
-        statusText.text = "First request failed";
-        ServerResponse response = JsonConvert.DeserializeObject(firstRequest.downloadHandler.text) as ServerResponse;
+        Debug.Log($"Response {firstRequest.downloadHandler.text}");
+        ServerResponse response = JsonConvert.DeserializeObject<ServerResponse>(firstRequest.downloadHandler.text);
+        Debug.Log($"Formatted response {response}");
         // Step 2: Request will return an id in string type
         string objectId = response.id;
         string sound = response.sound;
+        Debug.Log($"Object {objectId}");
+        Debug.Log($"Sound {sound}");
 
         Debug.Log($"Received ID, attempting polling: {objectId}");
 
