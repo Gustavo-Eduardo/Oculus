@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6520211709219133718}
   - component: {fileID: 1004984386921081441}
   - component: {fileID: 1363228930612675551}
-  - component: {fileID: 8983533153673326642}
+  - component: {fileID: 6431306018144057847}
   m_Layer: 0
   m_Name: Baseball_Bat
   m_TagString: Untagged
@@ -155,8 +155,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leftHandGrabAnchor: {fileID: 0}
   rightHandGrabAnchor: {fileID: 0}
-  audioSource: {fileID: 8983533153673326642}
---- !u!82 &8983533153673326642
+  audioSource: {fileID: 0}
+--- !u!82 &6431306018144057847
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
