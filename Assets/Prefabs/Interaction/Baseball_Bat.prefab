@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.000000021855694, y: 0, z: -0, w: 1}
   m_LocalPosition: {x: 1.08, y: 0.429, z: -0.003}
-  m_LocalScale: {x: 1, y: 2, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6332029923234674741}
@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a0940a00c81e5544839ee020cac72aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visual: {fileID: 0}
-  colliderGO: {fileID: 0}
+  leftHandGrabAnchor: {fileID: 0}
+  rightHandGrabAnchor: {fileID: 0}
 --- !u!1 &4793877378406584704
 GameObject:
   m_ObjectHideFlags: 0

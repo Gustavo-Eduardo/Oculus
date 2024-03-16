@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Oculus.Interaction;
 using Oculus.Interaction.HandGrab;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace DreamXR.Interaction {
     public class BaseballBatController : MonoBehaviour {
@@ -12,8 +13,10 @@ namespace DreamXR.Interaction {
         public GameObject rightHandGrabAnchor;
 
         private const int STORE_THROWING_FRAMES_COUNT = 10;
-        private const float LINEAR_VELOCITY_MULTIPLIER = 2f;
+        private const float LINEAR_VELOCITY_MULTIPLIER = 1.5f;
         private const float ANGULAR_VELOCITY_MULTIPLIER = 0.5f;
+        // Anything hit above this magnitude threshold with the bat will be instantly destroyed.
+        private const float LINEAR_VELOCITY_MAGNITUDE_THRESHOLD_FOR_DESTRUCTION = 50f;
         // The index of the last velocity frame stored.
         int currentVelocityFrameIndex = 0;
         // These dictionaries keep last STORE_THROWING_FRAMES_COUNT of throwing frames data to better calculate
@@ -47,9 +50,15 @@ namespace DreamXR.Interaction {
 
         private void OnCollisionEnter(Collision other) {
             if (other.gameObject.TryGetComponent<Rigidbody>(out var otherRigidBody)) {
-                otherRigidBody.velocity = _throwLinearVelocity * LINEAR_VELOCITY_MULTIPLIER;
-                otherRigidBody.angularVelocity = -_throwAngularVelocity * ANGULAR_VELOCITY_MULTIPLIER;
-                ParticleManager.PlayAndFollow("SpikyFireTrail", other.transform);
+                Vector3 totalLinearVelocity = _throwAngularVelocity * LINEAR_VELOCITY_MULTIPLIER;
+                if (totalLinearVelocity.magnitude >= LINEAR_VELOCITY_MAGNITUDE_THRESHOLD_FOR_DESTRUCTION) {
+                    // If hit is too hard, the hitted object is instantly destroyed.
+                    Destroy(other.gameObject);
+                } else {
+                    otherRigidBody.velocity = totalLinearVelocity;
+                    otherRigidBody.angularVelocity = -_throwAngularVelocity * ANGULAR_VELOCITY_MULTIPLIER;
+                    ParticleManager.PlayAndFollow("SpikyFireTrail", other.transform);
+                }
             }
         }
 
