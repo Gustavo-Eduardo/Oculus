@@ -13,6 +13,23 @@ using UnityGLTF;
 
 public class ObjImporter : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject plane;
+
+    [SerializeField]
+    private TextMeshPro statusText;
+    public event Action<Sprite> OnSourceImageGenerated;
+
+    private void Awake()
+    {
+        OnSourceImageGenerated += (Sprite sprite) =>
+        {
+            plane.GetComponent<SpriteRenderer>().sprite = sprite;
+            BoxCollider collider = plane.GetComponent<BoxCollider>();
+            collider.size = new Vector3(sprite.texture.width, sprite.texture.height, 1);
+        };
+    }
+
     public void ImportObject(string text, Vector3 spawnPosition)
     {
         StartCoroutine(LoadObjectCoroutine(text, spawnPosition));
@@ -29,10 +46,12 @@ public class ObjImporter : MonoBehaviour
 
         if (firstRequest.result != UnityWebRequest.Result.Success)
         {
+            statusText.text = "First request failed";
             Debug.LogError("Step 1 API request failed: " + firstRequest.error);
             yield break;
         }
 
+        statusText.text = "First request failed";
         // Step 2: Request will return an id in string type
         string objectId = firstRequest.downloadHandler.text.Trim();
 
@@ -41,7 +60,10 @@ public class ObjImporter : MonoBehaviour
         // Step 3: Polling for object conversion
         string pollingUrl = "http://52.53.194.213:8000/api/conversions/";
         bool conversionCompleted = false;
+        string sourceFileUrl = "";
         string outputFileUrl = "";
+
+        statusText.text = "Generating image";
 
         while (!conversionCompleted)
         {
@@ -57,6 +79,7 @@ public class ObjImporter : MonoBehaviour
             Debug.Log($"result: {pollingRequest.result}");
             if (pollingRequest.result != UnityWebRequest.Result.Success)
             {
+                statusText.text = "Generation failed";
                 Debug.LogError("Step 3 API request failed: " + pollingRequest.error);
                 yield break;
             }
@@ -69,9 +92,35 @@ public class ObjImporter : MonoBehaviour
             // Step 4: Check if identified object has "output_file" field which is a URL
             foreach (var data in conversionDataArray)
             {
+                if (
+                    data.identifier == objectId
+                    && !string.IsNullOrEmpty(data.source_file)
+                    && string.IsNullOrEmpty(sourceFileUrl)
+                )
+                {
+                    sourceFileUrl = data.source_file;
+                    Debug.Log($"source file: {data.source_file}");
+                    Debug.Log($"url {sourceFileUrl}");
+                    UnityWebRequest imageRequest = UnityWebRequestTexture.GetTexture(sourceFileUrl);
+                    yield return imageRequest.SendWebRequest();
+                    if (imageRequest.result == UnityWebRequest.Result.Success)
+                    {
+                        DownloadHandlerTexture downloadHandlerTexture =
+                            imageRequest.downloadHandler as DownloadHandlerTexture;
+                        Texture2D texture = downloadHandlerTexture.texture;
+                        Sprite sprite = Sprite.Create(
+                            texture,
+                            new Rect(0, 0, texture.width, texture.height),
+                            Vector2.one * 0.5f
+                        );
+                        OnSourceImageGenerated?.Invoke(sprite);
+                        statusText.text = "Generating mesh";
+                    }
+                }
                 if (data.identifier == objectId && !string.IsNullOrEmpty(data.output_file))
                 {
                     Debug.Log($"converstion completed");
+                    statusText.text = "Generation completed";
                     conversionCompleted = true;
                     outputFileUrl = data.output_file;
                     Debug.Log($"output file: {data.output_file}");
@@ -153,11 +202,20 @@ public class ObjImporter : MonoBehaviour
             Rigidbody rigidbody = gltfObject.AddComponent<Rigidbody>();
             Grabbable grabbable = gltfObject.AddComponent<Grabbable>();
 
+            PhysicsGrabbable physicsGrabbable = gltfObject.AddComponent<PhysicsGrabbable>();
+            physicsGrabbable.InjectPointable(grabbable);
+            physicsGrabbable.InjectRigidbody(rigidbody);
+
             GrabInteractable grabInteractable = gltfObject.AddComponent<GrabInteractable>();
             grabInteractable.InjectOptionalPointableElement(grabbable);
             grabInteractable.InjectRigidbody(rigidbody);
 
-            HandGrabInteractable handGrabInteractable = gltfObject.AddComponent<HandGrabInteractable>();
+            DistanceGrabInteractable distanceGrabInteractable = gltfObject.AddComponent<DistanceGrabInteractable>();
+            distanceGrabInteractable.InjectOptionalPointableElement(grabbable);
+            distanceGrabInteractable.InjectRigidbody(rigidbody);
+
+            HandGrabInteractable handGrabInteractable =
+                gltfObject.AddComponent<HandGrabInteractable>();
             handGrabInteractable.InjectOptionalPointableElement(grabbable);
             handGrabInteractable.InjectRigidbody(rigidbody);
 
