@@ -42,7 +42,6 @@ Library: /Users/zendev/code/Oculus/Temp/BurstOutput/tempburstlibs/arm64-v8a/lib_
 --assembly-defines=UnityGLTFScripts;
 --generate-link-xml=Temp/burst.link.xml
 --temp-folder=/Users/zendev/code/Oculus/Temp/Burst
---debug=Full
 --key-folder=/Applications/Unity/Hub/Editor/2023.2.1f1/PlaybackEngines/AndroidPlayer
 --decode-folder=/Users/zendev/code/Oculus/Library/Burst
 --output=/Users/zendev/code/Oculus/Temp/BurstOutput/tempburstlibs/arm64-v8a/lib_burst_generated
