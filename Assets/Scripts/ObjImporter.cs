@@ -15,6 +15,7 @@ public class ObjImporter : MonoBehaviour
 {
     [SerializeField]
     private GameObject plane;
+
     [SerializeField]
     private TextMeshPro statusText;
     public event Action<Sprite> OnSourceImageGenerated;
@@ -50,6 +51,7 @@ public class ObjImporter : MonoBehaviour
             yield break;
         }
 
+        statusText.text = "First request failed";
         // Step 2: Request will return an id in string type
         string objectId = firstRequest.downloadHandler.text.Trim();
 
@@ -112,7 +114,7 @@ public class ObjImporter : MonoBehaviour
                             Vector2.one * 0.5f
                         );
                         OnSourceImageGenerated?.Invoke(sprite);
-                        statusText.text = "Generating model";
+                        statusText.text = "Generating mesh";
                     }
                 }
                 if (data.identifier == objectId && !string.IsNullOrEmpty(data.output_file))
@@ -207,6 +209,10 @@ public class ObjImporter : MonoBehaviour
             GrabInteractable grabInteractable = gltfObject.AddComponent<GrabInteractable>();
             grabInteractable.InjectOptionalPointableElement(grabbable);
             grabInteractable.InjectRigidbody(rigidbody);
+
+            DistanceGrabInteractable distanceGrabInteractable = gltfObject.AddComponent<DistanceGrabInteractable>();
+            distanceGrabInteractable.InjectOptionalPointableElement(grabbable);
+            distanceGrabInteractable.InjectRigidbody(rigidbody);
 
             HandGrabInteractable handGrabInteractable =
                 gltfObject.AddComponent<HandGrabInteractable>();
