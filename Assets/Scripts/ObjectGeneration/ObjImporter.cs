@@ -10,72 +10,31 @@ using Oculus.Interaction.HandGrab;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityGLTF;
 
 public class ObjImporter : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject plane;
+    public enum Status
+    {
+        ErrorFirstRequest,
+        ErrorGeneration,
+        GeneratingImage,
+        GeneratingMesh,
+        GenerationComplete
+    }
 
-    [SerializeField]
-    private GameObject selectorPrefab;
-
-    [SerializeField]
-    private TextMeshPro statusText;
+    public event Action<string, Vector3> OnModelGenerationStarted;
+    public event Action<Status> OnModelGenerationStatusChange;
+    public event Action<GameObject> OnModelGenerationFinished;
     public event Action<Sprite> OnSourceImageGenerated;
-    public event Action OnModelGenerationFinished;
-    private GameObject currentInstantiatedMesh;
-    private GameObject currentSpawnCircle;
 
-    private void Awake()
+    public void TriggerImageGeneratedEvent(Sprite sprite)
     {
-        OnSourceImageGenerated += (Sprite sprite) =>
-        {
-            plane.GetComponent<SpriteRenderer>().sprite = sprite;
-            BoxCollider collider = plane.GetComponent<BoxCollider>();
-            collider.size = new Vector3(sprite.texture.width, sprite.texture.height, 1);
-        };
-    }
-
-    private void updateCurrentInstantiatedMesh(GameObject instantiateMesh)
-    {
-        currentInstantiatedMesh = instantiateMesh;
-    }
-
-    public void TriggerImageGeneratedEvent(Sprite sprite) {
         OnSourceImageGenerated?.Invoke(sprite);
-     }
-
-    private void Update()
-    {
-        if (currentInstantiatedMesh != null)
-        {
-            bool pressedB = OVRInput.GetUp(OVRInput.Button.Two);
-            ImportedObjectController controller =
-                currentInstantiatedMesh.GetComponent<ImportedObjectController>();
-            if (!controller.IsSelected() && pressedB)
-            {
-                controller.RespawnObject();
-            }
-        }
     }
 
     public void ImportObject(string text, Vector3 spawnPosition)
     {
-        if (currentSpawnCircle != null)
-        {
-            Destroy(currentSpawnCircle);
-        }
-        GameObject selector = Instantiate(selectorPrefab);
-        currentSpawnCircle = selector;
-        selector.transform.position = spawnPosition - Vector3.up + Vector3.up * 0.01f;
-        OnModelGenerationFinished += delegate
-        {
-            if (selector != null)
-            {
-                Destroy(selector);
-            }
-        };
+        OnModelGenerationStarted?.Invoke(text, spawnPosition);
         StartCoroutine(LoadObjectCoroutine(text, spawnPosition));
     }
 
@@ -91,7 +50,7 @@ public class ObjImporter : MonoBehaviour
         if (firstRequest.result != UnityWebRequest.Result.Success)
         {
             Debug.LogError("Step 1 API request failed: " + firstRequest.error);
-        statusText.text = "First request failed";
+            OnModelGenerationStatusChange?.Invoke(Status.ErrorFirstRequest);
             yield break;
         }
 
@@ -112,7 +71,7 @@ public class ObjImporter : MonoBehaviour
         string sourceFileUrl = "";
         string outputFileUrl = "";
 
-        statusText.text = "Generating image";
+        OnModelGenerationStatusChange?.Invoke(Status.GeneratingImage);
 
         while (!conversionCompleted)
         {
@@ -128,9 +87,9 @@ public class ObjImporter : MonoBehaviour
             Debug.Log($"result: {pollingRequest.result}");
             if (pollingRequest.result != UnityWebRequest.Result.Success)
             {
-                statusText.text = "Generation failed";
+                OnModelGenerationStatusChange?.Invoke(Status.ErrorGeneration);
                 Debug.LogError("Step 3 API request failed: " + pollingRequest.error);
-                OnModelGenerationFinished?.Invoke();
+                OnModelGenerationFinished?.Invoke(null);
                 yield break;
             }
 
@@ -164,13 +123,13 @@ public class ObjImporter : MonoBehaviour
                             Vector2.one * 0.5f
                         );
                         OnSourceImageGenerated?.Invoke(sprite);
-                        statusText.text = "Generating mesh";
+                        OnModelGenerationStatusChange?.Invoke(Status.GeneratingMesh);
                     }
                 }
                 if (data.identifier == objectId && !string.IsNullOrEmpty(data.output_file))
                 {
                     Debug.Log($"converstion completed");
-                    statusText.text = "Generation completed";
+                    OnModelGenerationStatusChange?.Invoke(Status.GenerationComplete);
                     conversionCompleted = true;
                     outputFileUrl = data.output_file;
                     Debug.Log($"output file: {data.output_file}");
@@ -194,7 +153,7 @@ public class ObjImporter : MonoBehaviour
         if (www.result != UnityWebRequest.Result.Success)
         {
             Debug.LogError("API request failed: " + www.error);
-            OnModelGenerationFinished?.Invoke();
+            OnModelGenerationFinished?.Invoke(null);
             yield break;
         }
 
@@ -205,34 +164,12 @@ public class ObjImporter : MonoBehaviour
         ImportGLB(www.downloadHandler.data, apiUrl, spawnPosition);
     }
 
-    private IEnumerator LoadObjectCoroutineBU(string word, Vector3 spawnPosition)
-    {
-        // Step 1: Make API Request to http://localhost:3001/godmode/object-image?word=banana
-        // string word = "banana";
-        string firstApiUrl =
-            $"https://projectmw.s3.us-east-2.amazonaws.com/godmode/models/tmp6jt9ud19.glb";
-        UnityWebRequest firstRequest = UnityWebRequest.Get(firstApiUrl);
-        Debug.Log("Sending request");
-        yield return firstRequest.SendWebRequest();
-
-        if (firstRequest.result != UnityWebRequest.Result.Success)
-        {
-            Debug.LogError("Step 1 API request failed: " + firstRequest.error);
-            yield break;
-        }
-
-        Debug.Log("Request done");
-        // Step 2: Request will return an id in string type
-        ImportGLB(firstRequest.downloadHandler.data, firstApiUrl, spawnPosition);
-    }
-
     public async void ImportGLB(byte[] data, string url, Vector3 spawnPosition)
     {
         Debug.Log("Importing object");
         var gltf = new GltfImport();
         bool success = await gltf.LoadGltfBinary(
             data,
-            // The URI of the original data is important for resolving relative URIs within the glTF
             new Uri(url)
         );
         if (success)
@@ -241,13 +178,6 @@ public class ObjImporter : MonoBehaviour
 
             GameObject gltfObject = new GameObject("GLTF Object");
             Debug.Log("Adding components");
-            // var gltfComponent = gltfObject.AddComponent<GLTFast.GltfAsset>();
-
-            // Set the GLTFComponent's uri to the path of the downloaded file
-            // gltfComponent.Url = glbFilePath;
-
-            // Start loading the GLB file. The GLTFComponent will handle the instantiation.
-            // gltfComponent.Load();
 
             gltfObject.AddComponent<BoxCollider>();
             Rigidbody rigidbody = gltfObject.AddComponent<Rigidbody>();
@@ -278,20 +208,17 @@ public class ObjImporter : MonoBehaviour
                 gltfObject.AddComponent<ImportedObjectController>();
             objectController.SetInitialPosition(spawnPosition);
 
-            // XRGrabInteractable xRGrab = obj.AddComponent<XRGrabInteractable>();
-            // xRGrab.useDynamicAttach = true;
             gltfObject.transform.localScale = gltfObject.transform.localScale * 0.5f;
             gltfObject.transform.position = spawnPosition;
 
             Debug.Log("Instantiating Model");
             await gltf.InstantiateMainSceneAsync(gltfObject.transform);
-            OnModelGenerationFinished?.Invoke();
-            currentInstantiatedMesh = gltfObject;
+            OnModelGenerationFinished?.Invoke(gltfObject);
         }
         // Instantiate the GLTFComponent on an empty GameObject
     }
 
-    [System.Serializable]
+    [Serializable]
     public class ConversionData
     {
         public string identifier;
@@ -301,8 +228,8 @@ public class ObjImporter : MonoBehaviour
         public string finished_at;
         public string duration;
     }
-    
-    [System.Serializable]
+
+    [Serializable]
     public class ServerResponse
     {
         public string id;
