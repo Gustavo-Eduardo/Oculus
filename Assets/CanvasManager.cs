@@ -18,11 +18,26 @@ public class CanvasManager : MonoBehaviour
     private ObjectGenerationConfirmation generationConfirmation;
 
     [SerializeField]
+    private TextRequestConfirmation textInputConfirmation;
+
+    [SerializeField]
     private RayInteractor rayInteractor;
+
+    [SerializeField]
+    private VoiceRecognitionManager generationRecognitionManager;
+
+    [SerializeField]
+    private VoiceRecognitionManager textInputRecognitionManager;
 
     private void Start()
     {
-        VoiceRecognitionManager.Instance.OnRequestDone += CanvasManager_OnRequestDone;
+        generationRecognitionManager.OnRequestDone += CanvasManager_OnRequestDone;
+        textInputRecognitionManager.OnRequestDone += CanvasManager_TextInputRequestDone;
+    }
+
+    private void CanvasManager_TextInputRequestDone(string word)
+    {
+        textInputConfirmation.ActivateConfirmation();
     }
 
     private void CanvasManager_OnRequestDone(string word)
@@ -49,7 +64,7 @@ public class CanvasManager : MonoBehaviour
 
     private void ConfirmImportObject(string cleanWord, Vector3 hitPosition)
     {
-        objectImporter.ImportObject(cleanWord, hitPosition);        
+        objectImporter.ImportObject(cleanWord, hitPosition);
     }
 
     private string CleanWord(string word)

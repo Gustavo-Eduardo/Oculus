@@ -11,12 +11,13 @@ public class InputManager : MonoBehaviour
     public event Action Input_OnPressY;
     public event Action Input_OnPressA;
     public event Action Input_OnReleaseA;
+    public event Action Input_OnPressLeftGrab;
+    public event Action Input_OnReleaseLeftGrab;
+    [SerializeField] private VoiceRecognitionManager generationRecognitionManager;
 
     private float rJoystickYInput;
     private bool pressingTrigger;
-    private bool pressingButton;
-
-    private void Awake() { }
+    private bool pressingLeftHold;
 
     private void Update()
     {
@@ -26,7 +27,28 @@ public class InputManager : MonoBehaviour
         HandleAButton();
         HandleXButton();
         HandleYButton();
+        HandleHoldLeftGrab();
     }
+
+    private void HandleHoldLeftGrab() {
+        bool isPressing = OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger) > 0;
+        if (pressingLeftHold) {
+            if(!isPressing) {
+                pressingLeftHold = false;
+                Input_OnReleaseLeftGrab?.Invoke();
+            }
+        } else {
+            if (isPressing) {
+                pressingLeftHold = true;
+                Input_OnPressLeftGrab?.Invoke();
+            }
+        }
+    }
+
+    public bool IsPressingLeftHold() {
+        return pressingLeftHold;
+    }
+
     private void HandleAButton()
     {
         bool isPressed = OVRInput.GetDown(OVRInput.Button.One);
@@ -34,13 +56,13 @@ public class InputManager : MonoBehaviour
         if (isPressed)
         {
             Debug.Log("Start recording");
-            VoiceRecognitionManager.Instance?.TriggerStartRecording();
+            generationRecognitionManager?.TriggerStartRecording();
             Input_OnPressA?.Invoke();
         }
         if (isReleased)
         {
             Debug.Log("Stop recording");
-            VoiceRecognitionManager.Instance?.TriggerStopRecording();
+            generationRecognitionManager?.TriggerStopRecording();
             Input_OnReleaseA?.Invoke();
         }
     }

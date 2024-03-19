@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public class VoiceRecognitionManager : MonoBehaviour
 {
-    public static VoiceRecognitionManager Instance { get; private set; }
     public event EventHandler OnStartRecording;
     public event EventHandler OnStopRecording;
     public event Action<string> OnRequestDone;
@@ -17,14 +16,6 @@ public class VoiceRecognitionManager : MonoBehaviour
     private bool recording = false;
     private int maxTimeSeconds = 10;
     private int audioHz = 44100;
-
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-    }
 
     private void Start()
     {

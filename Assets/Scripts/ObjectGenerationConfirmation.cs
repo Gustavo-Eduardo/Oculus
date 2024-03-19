@@ -31,6 +31,7 @@ public class ObjectGenerationConfirmation : MonoBehaviour
         inputManager.Input_OnPressX += delegate {
             Debug.Log("Selected");
             OnConfirmGeneration?.Invoke();
+            if (OnConfirmGeneration == null) return;
             Delegate[] list = OnConfirmGeneration.GetInvocationList();
             foreach (Action d in list)
             {
