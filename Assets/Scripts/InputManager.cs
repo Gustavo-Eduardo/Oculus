@@ -10,23 +10,20 @@ public class InputManager : MonoBehaviour
     public event Action Input_OnPressX;
     public event Action Input_OnPressY;
     public event Action Input_OnPressA;
+    public event Action Input_OnPressB;
     public event Action Input_OnReleaseA;
     public event Action Input_OnPressLeftGrab;
     public event Action Input_OnReleaseLeftGrab;
     [SerializeField] private VoiceRecognitionManager generationRecognitionManager;
 
-    private float rJoystickYInput;
-    private bool pressingTrigger;
     private bool pressingLeftHold;
 
     private void Update()
     {
-        // HandleTriggerButton();
-        // Vector2 inputMovement = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick) * Vector2.up;
-        // rJoystickYInput = inputMovement.y;
         HandleAButton();
         HandleXButton();
         HandleYButton();
+        HandleBButton();
         HandleHoldLeftGrab();
     }
 
@@ -43,10 +40,6 @@ public class InputManager : MonoBehaviour
                 Input_OnPressLeftGrab?.Invoke();
             }
         }
-    }
-
-    public bool IsPressingLeftHold() {
-        return pressingLeftHold;
     }
 
     private void HandleAButton()
@@ -71,9 +64,17 @@ public class InputManager : MonoBehaviour
         bool isPressed = OVRInput.GetUp(OVRInput.Button.Three);
         if (isPressed)
         {
-            // VoiceRecognitionManager.Instance.TriggerStartRecording();
             Debug.Log("Press X");
             Input_OnPressX?.Invoke();
+        }
+    }
+    private void HandleBButton()
+    {
+        bool isPressed = OVRInput.GetUp(OVRInput.Button.Two);
+        if (isPressed)
+        {
+            Debug.Log("Press B");
+            Input_OnPressB?.Invoke();
         }
     }
     private void HandleYButton()
@@ -89,40 +90,4 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    private void HandleTriggerButton()
-    {
-        float primaryIndexTriggerValue = OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger);
-        if (primaryIndexTriggerValue > 0)
-        {
-            if (!pressingTrigger)
-            {
-                pressingTrigger = true;
-                OnHoldButton();
-            }
-        }
-        else
-        {
-            if (pressingTrigger)
-            {
-                pressingTrigger = false;
-                OnReleaseButton();
-            }
-        }
-    }
-
-    private void OnHoldButton()
-    {
-        // VoiceRecognitionManager.Instance.TriggerStartRecording();
-    }
-
-    private void OnReleaseButton()
-    {
-        // VoiceRecognitionManager.Instance.TriggerStopRecording();
-        Input_OnReleaseButton?.Invoke();
-    }
-
-    public float GetRightJoystickYAxisInput()
-    {
-        return rJoystickYInput;
-    }
 }
