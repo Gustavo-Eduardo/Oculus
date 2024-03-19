@@ -7,6 +7,7 @@ public class ButtonsTest : MonoBehaviour
 {
     [SerializeField] private Button startButton;
     [SerializeField] private Button stopButton;
+    [SerializeField] private VoiceRecognitionManager voiceRecognitionManager;
 
     private void Start()
     {
@@ -16,10 +17,10 @@ public class ButtonsTest : MonoBehaviour
 
     private void StartRecordingManual()
     {
-        VoiceRecognitionManager.Instance.TriggerStartRecording();
+        voiceRecognitionManager.TriggerStartRecording();
     }
     private void StopRecordingManual()
     {
-        VoiceRecognitionManager.Instance.TriggerStopRecording();
+        voiceRecognitionManager.TriggerStopRecording();
     }
 }
