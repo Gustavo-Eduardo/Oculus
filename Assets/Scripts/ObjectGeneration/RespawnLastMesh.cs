@@ -24,6 +24,7 @@ public class RespawnLastMesh : MonoBehaviour
 
     private void OnPressedB()
     {
+        if (currentInstantiatedMesh == null) return;
         ImportedObjectController controller =
                 currentInstantiatedMesh.GetComponent<ImportedObjectController>();
         if (!controller.IsSelected())

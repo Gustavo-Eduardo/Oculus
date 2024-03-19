@@ -1,0 +1,62 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using Oculus.Interaction;
+using Oculus.Interaction.Surfaces;
+using UnityEngine;
+
+public class ModelGenerationFromInput : MonoBehaviour
+{
+
+    public event Action<string> OnTextChange;
+
+    [SerializeField] private InputManager inputManager;
+    [SerializeField] private VoiceRecognitionManager generationVoiceRecognition;
+    [SerializeField] private ConfirmationManager confirmationManager;
+    [SerializeField] private RayInteractor rayInteractor;
+    [SerializeField] private ObjImporter objImporter;
+
+    private void Start()
+    {
+        inputManager.Input_OnPressA += OnPressA;
+        inputManager.Input_OnReleaseA += OnReleaseA;
+        generationVoiceRecognition.OnRequestDone += OnRequestDone;
+    }
+
+    private void OnRequestDone(string text) {
+        // this.word.text = word.Replace(".", "");
+        string cleanWord = CleanWord(text);
+        OnTextChange?.Invoke(text);
+        if (rayInteractor.CollisionInfo.HasValue)
+        {
+            SurfaceHit collision = rayInteractor.CollisionInfo.Value;
+            Vector3 hitPosition = collision.Point + Vector3.up;
+            // TODO: Handle case when there is no collision
+            confirmationManager.ActivateText();
+            Action ConfirmImportObjectAction = delegate
+            {
+                objImporter.ImportObject(cleanWord, hitPosition);
+            };
+            confirmationManager.OnConfirmation += ConfirmImportObjectAction;
+
+        }
+    }
+
+    private void OnPressA()
+    {
+        generationVoiceRecognition.TriggerStartRecording();
+    }
+    private void OnReleaseA()
+    {
+        generationVoiceRecognition.TriggerStopRecording();
+    }
+
+     private string CleanWord(string word)
+    {
+        string cleanWord = word.Trim().ToLower();
+        cleanWord = cleanWord.Replace(".", "");
+        cleanWord = cleanWord.Replace(" ", "_");
+        return cleanWord;
+    }
+
+}
