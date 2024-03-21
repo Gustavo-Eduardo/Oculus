@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Oculus.Interaction;
 using Oculus.Interaction.Surfaces;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ModelGenerationFromInput : MonoBehaviour
 {
@@ -18,8 +19,9 @@ public class ModelGenerationFromInput : MonoBehaviour
 
     private void Start()
     {
-        inputManager.Input_OnPressA += OnPressA;
-        inputManager.Input_OnReleaseA += OnReleaseA;
+        InputAction RecordAction = inputManager.inputActions.GenerationRecording.Record;
+        RecordAction.started += StartRecording;
+        RecordAction.canceled += StopRecording;
         generationVoiceRecognition.OnRequestDone += OnRequestDone;
     }
 
@@ -42,11 +44,11 @@ public class ModelGenerationFromInput : MonoBehaviour
         }
     }
 
-    private void OnPressA()
+    private void StartRecording(InputAction.CallbackContext context)
     {
         generationVoiceRecognition.TriggerStartRecording();
     }
-    private void OnReleaseA()
+    private void StopRecording(InputAction.CallbackContext context)
     {
         generationVoiceRecognition.TriggerStopRecording();
     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ConfirmationManager : MonoBehaviour
 {
@@ -13,30 +14,36 @@ public class ConfirmationManager : MonoBehaviour
 
     private void Start()
     {
-        transform.SetParent(confirmationSpawnPoint);
-        inputManager.Input_OnPressX += OnConfirm;
-        inputManager.Input_OnPressY += OnCancel;
+        inputManager.SetActionMapAvailability(InputManager.ActionMap.Confirmation, true);
+        transform.SetParent(confirmationSpawnPoint, false);
+        inputManager.inputActions.Confirmation.Confirm.performed += OnConfirm;
+        inputManager.inputActions.Confirmation.Cancel.performed += OnCancel;
+        DeactivateText();
     }
 
     public void ActivateText()
     {
         confirmText.SetActive(true);
         cancelText.SetActive(true);
+        inputManager.SetActionMapAvailability(InputManager.ActionMap.Confirmation, true);
     }
 
     public void DeactivateText()
     {
         confirmText.SetActive(false);
         cancelText.SetActive(false);
+        inputManager.SetActionMapAvailability(InputManager.ActionMap.Confirmation, false);
     }
 
-    private void OnConfirm()
+    private void OnConfirm(InputAction.CallbackContext context)
     {
         OnConfirmation?.Invoke();
+        DeactivateText();
     }
-    private void OnCancel()
+    private void OnCancel(InputAction.CallbackContext context)
     {
         Debug.Log("Canceled");
+        DeactivateText();
     }
 
 }

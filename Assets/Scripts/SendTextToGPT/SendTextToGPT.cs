@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Oculus.Interaction;
 using Oculus.Interaction.Surfaces;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Networking;
 
 public class SendTextToGPT : MonoBehaviour
@@ -16,22 +17,24 @@ public class SendTextToGPT : MonoBehaviour
 
     private void Start()
     {
-        inputManager.Input_OnPressLeftGrab += OnHoldGrab;
-        inputManager.Input_OnReleaseLeftGrab += OnReleaseGrab;
+        InputAction RecordAction = inputManager.inputActions.ChatRecording.Record;
+        RecordAction.started += StartRecording;
+        RecordAction.performed += StopRecording;
         sendTextVoiceRecognition.OnRequestDone += OnRequestDone;
     }
 
-    private void OnHoldGrab()
+    private void StartRecording(InputAction.CallbackContext context)
     {
         sendTextVoiceRecognition.TriggerStartRecording();
     }
-    private void OnReleaseGrab()
+    private void StopRecording(InputAction.CallbackContext context)
     {
         sendTextVoiceRecognition.TriggerStopRecording();
     }
 
     private void OnRequestDone(string text)
     {
+        confirmationManager.ActivateText();
         Action ConfirmSendText = delegate
         {
             StartCoroutine(HandleRequest(text));
