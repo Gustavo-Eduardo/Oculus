@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class RespawnLastMesh : MonoBehaviour
 {
@@ -10,8 +11,8 @@ public class RespawnLastMesh : MonoBehaviour
 
     private void Start()
     {
+        inputManager.inputActions.Main.RespawnObject.performed += RespawnObject;
         objImporter.OnModelGenerationFinished += OnModelGenerationFinished;
-        inputManager.Input_OnPressB += OnPressedB;
     }
 
     private void OnModelGenerationFinished(GameObject renderedMesh)
@@ -22,7 +23,7 @@ public class RespawnLastMesh : MonoBehaviour
         }
     }
 
-    private void OnPressedB()
+    private void RespawnObject(InputAction.CallbackContext context)
     {
         if (currentInstantiatedMesh == null) return;
         ImportedObjectController controller =

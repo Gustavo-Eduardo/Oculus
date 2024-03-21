@@ -1,0 +1,166 @@
+{
+    "name": "InputActions",
+    "maps": [
+        {
+            "name": "Main",
+            "id": "e4c5478b-23e6-4979-9309-69a12566b7d6",
+            "actions": [
+                {
+                    "name": "RespawnObject",
+                    "type": "Button",
+                    "id": "913cdca7-89a2-4ebc-9548-2c2f1f9355d6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "554a266a-97b8-47e7-99af-972ed3f9bbb9",
+                    "path": "<XRController>{RightHand}/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RespawnObject",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Confirmation",
+            "id": "03d23132-1313-474f-b913-75072df86932",
+            "actions": [
+                {
+                    "name": "Cancel",
+                    "type": "Button",
+                    "id": "25d11353-006e-484a-a199-c8c82d5ae146",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Confirm",
+                    "type": "Button",
+                    "id": "0e88911b-5616-49d4-8967-134751f25769",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "19436dcf-bc23-4b9e-beff-0ebcdf0df213",
+                    "path": "<XRController>{LeftHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Confirm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "76bbca46-c484-4c81-8c68-d28a1143c6d1",
+                    "path": "<XRController>{LeftHand}/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Cancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "GenerationRecording",
+            "id": "79050304-3d4b-4adc-bc5d-ac267e209a49",
+            "actions": [
+                {
+                    "name": "Record",
+                    "type": "Button",
+                    "id": "89520b64-966f-49be-94a6-c6cedcb47e28",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "524ac669-78d5-42fe-a207-d9f6552286fc",
+                    "path": "<XRController>{RightHand}/primaryButton",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Record",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "ChatRecording",
+            "id": "a27d9b25-6de8-488b-b66b-54ac94df623d",
+            "actions": [
+                {
+                    "name": "Record",
+                    "type": "Button",
+                    "id": "217e13bb-4b1f-4a88-b3e4-66f71bdfc4af",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "1e0f8d38-8673-44f0-8743-7f9c6a60ee29",
+                    "path": "<XRController>{LeftHand}/gripPressed",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Record",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "HoldingObject",
+            "id": "5163bf97-9843-446a-8bf3-e51c3dbdafbb",
+            "actions": [
+                {
+                    "name": "Destroy",
+                    "type": "Button",
+                    "id": "472f7428-1796-4c40-a299-876f47785dc5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "281bc0b2-8983-4013-952a-b77f527fb60b",
+                    "path": "<XRController>{RightHand}/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Destroy",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

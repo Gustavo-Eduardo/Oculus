@@ -14,9 +14,11 @@ public class ImportedObjectController : MonoBehaviour
     private Grabbable _grabbable;
     private bool isSelected = false;
     private Vector3 initialPosition;
+    private InputManager inputManager;
 
     private void Start()
     {
+        inputManager = FindAnyObjectByType<InputManager>();
         _rigidbody = GetComponent<Rigidbody>();
         _grabbable = GetComponent<Grabbable>();
         _grabbable.WhenPointerEventRaised += HandleEvent;
@@ -27,11 +29,13 @@ public class ImportedObjectController : MonoBehaviour
         initialPosition = position;
     }
 
-    public void RespawnObject() {
+    public void RespawnObject()
+    {
         transform.position = initialPosition;
     }
 
-    public bool IsSelected() {
+    public bool IsSelected()
+    {
         return isSelected;
     }
 
@@ -48,10 +52,12 @@ public class ImportedObjectController : MonoBehaviour
     {
         if (ev.Type == PointerEventType.Select)
         {
+            inputManager.SetActionMapAvailability(InputManager.ActionMap.HoldingObject, true);
             OnSelectedImportedObject();
         }
         else if (ev.Type == PointerEventType.Unselect)
         {
+            inputManager.SetActionMapAvailability(InputManager.ActionMap.HoldingObject, false);
             OnUnselectedImportedObject();
         }
     }
