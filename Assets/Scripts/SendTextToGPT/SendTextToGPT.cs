@@ -10,6 +10,7 @@ using UnityEngine.Networking;
 public class SendTextToGPT : MonoBehaviour
 {
     public event Action<string> OnTextChange;
+    public event Action<string> OnChatRequestDone;
 
     [SerializeField] private InputManager inputManager;
     [SerializeField] private VoiceRecognitionManager sendTextVoiceRecognition;
@@ -58,6 +59,7 @@ public class SendTextToGPT : MonoBehaviour
         }
 
         OnTextChange?.Invoke(request.downloadHandler.text);
+        OnChatRequestDone?.Invoke(request.downloadHandler.text);
     }
 
 }
