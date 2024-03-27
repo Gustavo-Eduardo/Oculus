@@ -35,6 +35,15 @@ public class ConfirmationManager : MonoBehaviour
         inputManager.SetActionMapAvailability(InputManager.ActionMap.Confirmation, false);
     }
 
+    public void CleanConfirmationCallbacks()
+    {
+        if (OnConfirmation != null)
+        {
+
+            OnConfirmation = null;
+        }
+    }
+
     private void OnConfirm(InputAction.CallbackContext context)
     {
         OnConfirmation?.Invoke();

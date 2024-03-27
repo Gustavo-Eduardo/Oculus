@@ -17,6 +17,7 @@ public class ChatPlayVoiceAudio : MonoBehaviour
 
     private void OnChatRequestDone(string response)
     {
+        Debug.Log(response);
         ttsManager.PlayText(response);
     }
 }
