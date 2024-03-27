@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using Oculus.Interaction;
 using Oculus.Interaction.Surfaces;
 using UnityEngine;
@@ -15,6 +16,11 @@ public class SendTextToGPT : MonoBehaviour
     [SerializeField] private InputManager inputManager;
     [SerializeField] private VoiceRecognitionManager sendTextVoiceRecognition;
     [SerializeField] private ConfirmationManager confirmationManager;
+    [SerializeField] private ObjImporter objImporter;
+    [SerializeField] private Transform bot;
+
+
+    private string threadId;
 
     private void Start()
     {
@@ -22,6 +28,8 @@ public class SendTextToGPT : MonoBehaviour
         RecordAction.started += StartRecording;
         RecordAction.canceled += StopRecording;
         sendTextVoiceRecognition.OnRequestDone += OnRequestDone;
+
+        StartCoroutine(HandleRequest("Hello, generate an apple"));
     }
 
     private void StartRecording(InputAction.CallbackContext context)
@@ -42,16 +50,59 @@ public class SendTextToGPT : MonoBehaviour
         {
             StartCoroutine(HandleRequest(text));
         };
+        confirmationManager.CleanConfirmationCallbacks();
         confirmationManager.OnConfirmation += ConfirmSendText;
     }
 
+    // private IEnumerator HandleRequest(string text)
+    // {
+    //     string apiUrl = $"https://memorywarserver.herokuapp.com/godmode/simulate-conversation";
+    //     Dictionary<string, string> formData = new();
+    //     formData["message"] = text;
+    //     UnityWebRequest request = UnityWebRequest.Post(apiUrl, formData);
+    //     Debug.Log("Sending request");
+    //     yield return request.SendWebRequest();
+
+    //     if (request.result != UnityWebRequest.Result.Success)
+    //     {
+    //         Debug.LogError("API request failed: " + request.error);
+    //         yield break;
+    //     }
+
+    //     OnTextChange?.Invoke(request.downloadHandler.text);
+    //     OnChatRequestDone?.Invoke(request.downloadHandler.text);        
+    // }
+
     private IEnumerator HandleRequest(string text)
     {
-        string apiUrl = $"https://memorywarserver.herokuapp.com/godmode/simulate-conversation";
+        if (threadId == null)
+        {
+            // TODO: Change to MW Server
+            const string START_CONVERSATION_URL = "https://memorywarserver.herokuapp.com/godmode/start-conversation";
+            UnityWebRequest threadRequest = UnityWebRequest.Get(START_CONVERSATION_URL);
+            yield return threadRequest.SendWebRequest();
+
+            if (threadRequest.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("API request failed: " + threadRequest.error);
+                yield break;
+            }
+
+            StartConversationResponse parsedResponse =
+                JsonConvert.DeserializeObject<StartConversationResponse>(
+                    threadRequest.downloadHandler.text
+                );
+            threadId = parsedResponse.threadId;
+        }
+
+        // TODO: Change to MW Server
+        const string SEND_MESSAGE_TO_CONVERSATION_URL =
+            "https://memorywarserver.herokuapp.com/godmode/conversation-message";
         Dictionary<string, string> formData = new();
         formData["message"] = text;
-        UnityWebRequest request = UnityWebRequest.Post(apiUrl, formData);
-        Debug.Log("Sending request");
+        formData["threadId"] = threadId;
+        UnityWebRequest request = UnityWebRequest.Post(SEND_MESSAGE_TO_CONVERSATION_URL, formData);
+        Debug.Log($"Sending request: {text}");
         yield return request.SendWebRequest();
 
         if (request.result != UnityWebRequest.Result.Success)
@@ -60,8 +111,51 @@ public class SendTextToGPT : MonoBehaviour
             yield break;
         }
 
-        OnTextChange?.Invoke(request.downloadHandler.text);
-        OnChatRequestDone?.Invoke(request.downloadHandler.text);
+        Debug.Log("requestText: " + request.downloadHandler.text);
+
+        SendMessageToConversationResponse conversationResponse =
+            JsonConvert.DeserializeObject<SendMessageToConversationResponse>(
+                request.downloadHandler.text
+            );
+
+        if (conversationResponse.functionCalls.Length > 0)
+        {
+            foreach (FunctionCallObject functionCall in conversationResponse.functionCalls)
+            {
+
+                Debug.Log($"Function call: {functionCall.name}");
+                objImporter.ImportObject(functionCall.args["objectString"], bot.position);
+                // foreach (KeyValuePair<string, string> keyValue in functionCall.args)
+                // {
+                //     Debug.Log($"Arg: {keyValue.Key}");
+                //     Debug.Log($"Value: {keyValue.Value}");
+                // }
+            }
+        }
+
+        string responseMessage = conversationResponse.message;
+
+        OnTextChange?.Invoke(responseMessage);
+        OnChatRequestDone?.Invoke(responseMessage);
     }
 
+    private class StartConversationResponse
+    {
+        public string threadId;
+    }
+
+    [Serializable]
+    private class SendMessageToConversationResponse
+    {
+        public string message;
+        public FunctionCallObject[] functionCalls;
+
+    }
+
+    [Serializable]
+    private class FunctionCallObject
+    {
+        public string name;
+        public Dictionary<string, string> args;
+    }
 }

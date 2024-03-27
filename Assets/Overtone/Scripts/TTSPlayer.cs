@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Assets.Overtone.Scripts;
 using UnityEngine;
@@ -6,6 +7,7 @@ namespace LeastSquares.Overtone
 {
     public class TTSPlayer : MonoBehaviour
     {
+        public event Action<string, float> OnTTSPlayerStart;
         public TTSEngine Engine;
         public TTSVoice Voice;
         public AudioSource source;
@@ -15,6 +17,8 @@ namespace LeastSquares.Overtone
             source.clip = audioClip;
             source.loop = false;
             source.Play();
+            
+            OnTTSPlayerStart?.Invoke(text, audioClip.length);
         }
     }
 }

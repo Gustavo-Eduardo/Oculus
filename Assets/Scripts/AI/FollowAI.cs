@@ -1,15 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using LeastSquares.Overtone;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Animations;
 
 public class FollowAI : MonoBehaviour
 {
-    [SerializeField] private SendTextToGPT gpt;
+    [SerializeField] private TTSPlayer ttsPlayer;
     [SerializeField] private NavMeshAgent aiAgent;
     [SerializeField] private Transform player;
     [SerializeField] private Animator aiAnimator;
+    [SerializeField] private TextMeshPro chatText;
 
     private bool isTalking = false;
 
@@ -17,34 +20,42 @@ public class FollowAI : MonoBehaviour
 
     private void Start()
     {
-        gpt.OnTextChange += FollowAI_Talk;
+        ttsPlayer.OnTTSPlayerStart += FollowAI_Talk;
     }
 
-    private void FollowAI_Talk(string text)
+    private void FollowAI_Talk(string text, float phraseLength)
     {
+        Debug.Log("Triggering AI talk");
+
         aiAnimator.ResetTrigger("walking");
         aiAnimator.ResetTrigger("idle");
 
         aiAnimator.SetTrigger("talking");
         isTalking = true;
 
-        StartCoroutine(TalkCoroutine());
+        chatText.text = text;
+
+        StartCoroutine(TalkCoroutine(phraseLength));
     }
 
-    private IEnumerator TalkCoroutine()
+    private IEnumerator TalkCoroutine(float phraseLength)
     {
-        yield return new WaitForSeconds(3f);
-        aiAnimator.ResetTrigger("talking");
+        Debug.Log("Waiting on phrase finish");
+        yield return new WaitForSeconds(phraseLength);
         isTalking = false;
+        chatText.text = "";
+        aiAnimator.ResetTrigger("talking");
+        aiAnimator.SetTrigger("idle");
+        Debug.Log("phrase finished, isTalking: " + isTalking.ToString());
     }
 
     private void Update()
     {
-        destination = player.position;
-        aiAgent.destination = destination;
-
         if (isTalking)
             return;
+
+        destination = player.position;
+        aiAgent.destination = destination;
 
         if (aiAgent.remainingDistance <= aiAgent.stoppingDistance)
         {
