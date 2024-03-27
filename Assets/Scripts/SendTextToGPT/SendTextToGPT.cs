@@ -20,7 +20,7 @@ public class SendTextToGPT : MonoBehaviour
     {
         InputAction RecordAction = inputManager.inputActions.ChatRecording.Record;
         RecordAction.started += StartRecording;
-        RecordAction.performed += StopRecording;
+        RecordAction.canceled += StopRecording;
         sendTextVoiceRecognition.OnRequestDone += OnRequestDone;
     }
 
@@ -35,6 +35,8 @@ public class SendTextToGPT : MonoBehaviour
 
     private void OnRequestDone(string text)
     {
+        OnTextChange?.Invoke(text);
+
         confirmationManager.ActivateText();
         Action ConfirmSendText = delegate
         {
@@ -45,7 +47,7 @@ public class SendTextToGPT : MonoBehaviour
 
     private IEnumerator HandleRequest(string text)
     {
-        string apiUrl = $"localhost:3001/godmode/simulate-conversation";
+        string apiUrl = $"https://memorywarserver.herokuapp.com/godmode/simulate-conversation";
         Dictionary<string, string> formData = new();
         formData["message"] = text;
         UnityWebRequest request = UnityWebRequest.Post(apiUrl, formData);
