@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 69097be8fbf264862b44531e78bd5b0f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 251304
+  packageName: Overtone - Realistic AI Offline Text to Speech (TTS)
+  packageVersion: 1.5.2
+  assetPath: Assets/Overtone/Editor/VoiceModel.cs
+  uploadId: 618421

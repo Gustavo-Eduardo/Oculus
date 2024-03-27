@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: a17a538114c747878ef0ade07f56e0eb
+timeCreated: 1685805039
+AssetOrigin:
+  serializedVersion: 1
+  productId: 251304
+  packageName: Overtone - Realistic AI Offline Text to Speech (TTS)
+  packageVersion: 1.5.2
+  assetPath: Assets/Overtone/Scripts/SSMLPreprocessor.cs
+  uploadId: 618421

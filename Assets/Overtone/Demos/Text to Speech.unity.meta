@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 9343dbef5e07d2ee18cc77378d53dbdf
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 251304
+  packageName: Overtone - Realistic AI Offline Text to Speech (TTS)
+  packageVersion: 1.5.2
+  assetPath: Assets/Overtone/Demos/Text to Speech.unity
+  uploadId: 618421
