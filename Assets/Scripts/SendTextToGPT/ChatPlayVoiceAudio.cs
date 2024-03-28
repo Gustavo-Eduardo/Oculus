@@ -8,11 +8,11 @@ public class ChatPlayVoiceAudio : MonoBehaviour
     private TTSManager ttsManager;
 
     [SerializeField]
-    private SendTextToGPT sendTextToGPT;
+    private ChatWithGPT chatWithGPT;
 
     private void Start()
     {
-        sendTextToGPT.OnChatRequestDone += OnChatRequestDone;
+        chatWithGPT.OnChatRequestDone += OnChatRequestDone;
     }
 
     private void OnChatRequestDone(string response)
