@@ -2895,6 +2895,69 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &813806150
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 813806153}
+  - component: {fileID: 813806152}
+  - component: {fileID: 813806151}
+  m_Layer: 0
+  m_Name: Chatbot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &813806151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 813806150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30d588ce25eb5ea4e918849cc304c34b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputManager: {fileID: 1088035922}
+  sendTextVoiceRecognition: {fileID: 1616223144}
+  objImporter: {fileID: 114714352}
+  spawnPoint: {fileID: 1023270343}
+--- !u!114 &813806152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 813806150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edbc61567178ec14fb97f4f1b5bc5ffa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ttsManager: {fileID: 0}
+  sendTextToGPT: {fileID: 0}
+--- !u!4 &813806153
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 813806150}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.25936377, y: 1.697629, z: 0.11591601}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &840159192
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3536,7 +3599,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932753969900558824, guid: 9012a9e344ed3af4b88d8fcb207f92ca, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8811590871280336973, guid: 9012a9e344ed3af4b88d8fcb207f92ca, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6985,6 +7048,7 @@ SceneRoots:
   - {fileID: 241241891}
   - {fileID: 924404585}
   - {fileID: 1200510065}
+  - {fileID: 813806153}
   - {fileID: 1470930610}
   - {fileID: 416543663}
   - {fileID: 46153647}
