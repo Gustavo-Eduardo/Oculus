@@ -35,6 +35,24 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""FireGunLeft"",
+                    ""type"": ""Button"",
+                    ""id"": ""84604c37-c782-4114-ae7c-f3615753f98c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""FireGunRight"",
+                    ""type"": ""Button"",
+                    ""id"": ""982a13ca-a7eb-4455-96af-25249267018b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -46,6 +64,28 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""RespawnObject"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ee3910cf-6952-453e-bf27-dc882e9b2f13"",
+                    ""path"": ""<XRController>{LeftHand}/{PrimaryTrigger}"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FireGunLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""21719f7d-7200-49c2-a582-72667ee55ffc"",
+                    ""path"": ""<XRController>{RightHand}/{PrimaryTrigger}"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FireGunRight"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -189,6 +229,8 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         // Main
         m_Main = asset.FindActionMap("Main", throwIfNotFound: true);
         m_Main_RespawnObject = m_Main.FindAction("RespawnObject", throwIfNotFound: true);
+        m_Main_FireGunLeft = m_Main.FindAction("FireGunLeft", throwIfNotFound: true);
+        m_Main_FireGunRight = m_Main.FindAction("FireGunRight", throwIfNotFound: true);
         // Confirmation
         m_Confirmation = asset.FindActionMap("Confirmation", throwIfNotFound: true);
         m_Confirmation_Cancel = m_Confirmation.FindAction("Cancel", throwIfNotFound: true);
@@ -264,11 +306,15 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Main;
     private List<IMainActions> m_MainActionsCallbackInterfaces = new List<IMainActions>();
     private readonly InputAction m_Main_RespawnObject;
+    private readonly InputAction m_Main_FireGunLeft;
+    private readonly InputAction m_Main_FireGunRight;
     public struct MainActions
     {
         private @InputActions m_Wrapper;
         public MainActions(@InputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @RespawnObject => m_Wrapper.m_Main_RespawnObject;
+        public InputAction @FireGunLeft => m_Wrapper.m_Main_FireGunLeft;
+        public InputAction @FireGunRight => m_Wrapper.m_Main_FireGunRight;
         public InputActionMap Get() { return m_Wrapper.m_Main; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -281,6 +327,12 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @RespawnObject.started += instance.OnRespawnObject;
             @RespawnObject.performed += instance.OnRespawnObject;
             @RespawnObject.canceled += instance.OnRespawnObject;
+            @FireGunLeft.started += instance.OnFireGunLeft;
+            @FireGunLeft.performed += instance.OnFireGunLeft;
+            @FireGunLeft.canceled += instance.OnFireGunLeft;
+            @FireGunRight.started += instance.OnFireGunRight;
+            @FireGunRight.performed += instance.OnFireGunRight;
+            @FireGunRight.canceled += instance.OnFireGunRight;
         }
 
         private void UnregisterCallbacks(IMainActions instance)
@@ -288,6 +340,12 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @RespawnObject.started -= instance.OnRespawnObject;
             @RespawnObject.performed -= instance.OnRespawnObject;
             @RespawnObject.canceled -= instance.OnRespawnObject;
+            @FireGunLeft.started -= instance.OnFireGunLeft;
+            @FireGunLeft.performed -= instance.OnFireGunLeft;
+            @FireGunLeft.canceled -= instance.OnFireGunLeft;
+            @FireGunRight.started -= instance.OnFireGunRight;
+            @FireGunRight.performed -= instance.OnFireGunRight;
+            @FireGunRight.canceled -= instance.OnFireGunRight;
         }
 
         public void RemoveCallbacks(IMainActions instance)
@@ -500,6 +558,8 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     public interface IMainActions
     {
         void OnRespawnObject(InputAction.CallbackContext context);
+        void OnFireGunLeft(InputAction.CallbackContext context);
+        void OnFireGunRight(InputAction.CallbackContext context);
     }
     public interface IConfirmationActions
     {

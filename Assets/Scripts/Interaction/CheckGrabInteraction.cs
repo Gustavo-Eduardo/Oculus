@@ -7,7 +7,8 @@ public class CheckGrabInteraction : MonoBehaviour
 {
     [SerializeField] GrabInteractor grabInteractor;
     [SerializeField] DistanceGrabInteractor distanceGrabInteractor;
-    public bool IsGrabbing() {
+    public bool IsGrabbing()
+    {
         return grabInteractor.HasSelectedInteractable || distanceGrabInteractor.HasSelectedInteractable;
     }
 }
