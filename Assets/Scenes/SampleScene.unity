@@ -2910,6 +2910,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ttsManager: {fileID: 945614856}
   chatWithGPT: {fileID: 813806151}
+  objImporter: {fileID: 114714352}
 --- !u!4 &813806153
 Transform:
   m_ObjectHideFlags: 0
@@ -3666,6 +3667,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ttsManager: {fileID: 945614856}
   chatWithGPT: {fileID: 0}
+  objImporter: {fileID: 0}
 --- !u!1 &1305321482
 GameObject:
   m_ObjectHideFlags: 0

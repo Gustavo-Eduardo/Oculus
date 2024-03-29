@@ -9,10 +9,19 @@ public class ChatPlayVoiceAudio : MonoBehaviour
 
     [SerializeField]
     private ChatWithGPT chatWithGPT;
+    [SerializeField]
+    private ObjImporter objImporter;
 
     private void Start()
     {
+        objImporter.OnModelGenerationFinished += OnModelGenerationFinished;
         chatWithGPT.OnChatRequestDone += OnChatRequestDone;
+    }
+
+    private void OnModelGenerationFinished(GameObject go)
+    {
+        ttsManager.PlayText("Your object has been conjured");
+        chatWithGPT.SendRequest("The last object has been generated tell me a little something about it");
     }
 
     private void OnChatRequestDone(string response)

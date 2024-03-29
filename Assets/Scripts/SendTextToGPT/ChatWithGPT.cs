@@ -54,6 +54,10 @@ public class ChatWithGPT : MonoBehaviour
         StartCoroutine(HandleRequest(text));
     }
 
+    public void SendRequest(string text) {
+        StartCoroutine(HandleRequest(text));
+    }
+
     private IEnumerator HandleRequest(string text)
     {
         if (threadId == null)
@@ -108,13 +112,10 @@ public class ChatWithGPT : MonoBehaviour
                 objImporter.ImportObject(functionCall.args["objectString"], spawnPoint.position);
             }
         }
-        else
-        {
-            string responseMessage = conversationResponse.message;
+        string responseMessage = conversationResponse.message;
 
-            OnTextChange?.Invoke(responseMessage);
-            OnChatRequestDone?.Invoke(responseMessage);
-        }
+        OnTextChange?.Invoke(responseMessage);
+        OnChatRequestDone?.Invoke(responseMessage);
 
     }
 
