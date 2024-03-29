@@ -20,7 +20,7 @@ public class ModelGenerationFromInput : MonoBehaviour
     private void Start()
     {
         InputAction RecordAction = inputManager.inputActions.GenerationRecording.Record;
-        RecordAction.started += StartRecording;
+        RecordAction.performed += StartRecording;
         RecordAction.canceled += StopRecording;
         generationVoiceRecognition.OnRequestDone += OnRequestDone;
     }
@@ -45,7 +45,7 @@ public class ModelGenerationFromInput : MonoBehaviour
     }
 
     private void StartRecording(InputAction.CallbackContext context)
-    {
+    {        
         generationVoiceRecognition.TriggerStartRecording();
     }
     private void StopRecording(InputAction.CallbackContext context)

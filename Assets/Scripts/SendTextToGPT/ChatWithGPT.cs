@@ -24,21 +24,22 @@ public class ChatWithGPT : MonoBehaviour
 
     [SerializeField]
     private Transform spawnPoint;
+    [SerializeField] private CheckGrabInteraction grabInteractorCheck;
 
     private string threadId;
 
     private void Start()
     {
         InputAction RecordAction = inputManager.inputActions.ChatRecording.Record;
-        RecordAction.started += StartRecording;
+        RecordAction.performed += StartRecording;
         RecordAction.canceled += StopRecording;
         sendTextVoiceRecognition.OnRequestDone += OnRequestDone;
-
-        StartCoroutine(HandleRequest("Hello, generate an apple"));
     }
 
     private void StartRecording(InputAction.CallbackContext context)
     {
+        Debug.Log(grabInteractorCheck.IsGrabbing());
+        if (grabInteractorCheck.IsGrabbing()) return;
         sendTextVoiceRecognition.TriggerStartRecording();
     }
 
@@ -105,18 +106,16 @@ public class ChatWithGPT : MonoBehaviour
             {
                 Debug.Log($"Function call: {functionCall.name}");
                 objImporter.ImportObject(functionCall.args["objectString"], spawnPoint.position);
-                // foreach (KeyValuePair<string, string> keyValue in functionCall.args)
-                // {
-                //     Debug.Log($"Arg: {keyValue.Key}");
-                //     Debug.Log($"Value: {keyValue.Value}");
-                // }
             }
         }
+        else
+        {
+            string responseMessage = conversationResponse.message;
 
-        string responseMessage = conversationResponse.message;
+            OnTextChange?.Invoke(responseMessage);
+            OnChatRequestDone?.Invoke(responseMessage);
+        }
 
-        OnTextChange?.Invoke(responseMessage);
-        OnChatRequestDone?.Invoke(responseMessage);
     }
 
     private class StartConversationResponse

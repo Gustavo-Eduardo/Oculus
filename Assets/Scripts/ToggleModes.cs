@@ -29,7 +29,7 @@ public class ToggleModes : MonoBehaviour
         if (OVRInput.GetUp(OVRInput.Button.SecondaryThumbstick)) {
             ToggleMode(!isZenMode);
         }
-        destructionModeImage.SetActive(!isZenMode);
+        // destructionModeImage.SetActive(!isZenMode);
         zenModeImage.SetActive(isZenMode);
     }
 

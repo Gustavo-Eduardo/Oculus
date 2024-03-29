@@ -41,6 +41,7 @@ public class VoiceRecognitionManager : MonoBehaviour
 
     private void StopRecording(object sender, EventArgs args)
     {
+        if (!recording) return;
         Debug.Log("Stop recording");
         var position = Microphone.GetPosition(null);
         Microphone.End(null);
