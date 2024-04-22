@@ -24,6 +24,7 @@ public class ObjImporter : MonoBehaviour
 
     public event Action<string, Vector3> OnModelGenerationStarted;
     public event Action<Status> OnModelGenerationStatusChange;
+    public event Action OnModelRequestSuccess;
     public event Action<GameObject> OnModelGenerationFinished;
     public event Action<Sprite> OnSourceImageGenerated;
 
@@ -157,6 +158,7 @@ public class ObjImporter : MonoBehaviour
             yield break;
         }
 
+        OnModelRequestSuccess?.Invoke();
         // string glbFilePath = Path.Combine(Application.persistentDataPath, "DownloadedObjects", $"{word}.glb");
         // Directory.CreateDirectory(Path.GetDirectoryName(glbFilePath));
         // File.WriteAllBytes(glbFilePath, www.downloadHandler.data);

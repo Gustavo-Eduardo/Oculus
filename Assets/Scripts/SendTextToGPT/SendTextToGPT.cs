@@ -28,8 +28,6 @@ public class SendTextToGPT : MonoBehaviour
         RecordAction.started += StartRecording;
         RecordAction.canceled += StopRecording;
         sendTextVoiceRecognition.OnRequestDone += OnRequestDone;
-
-        StartCoroutine(HandleRequest("Hello, generate an apple"));
     }
 
     private void StartRecording(InputAction.CallbackContext context)

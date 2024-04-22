@@ -14,11 +14,11 @@ public class ChatPlayVoiceAudio : MonoBehaviour
 
     private void Start()
     {
-        objImporter.OnModelGenerationFinished += OnModelGenerationFinished;
+        objImporter.OnModelRequestSuccess += OnModelGenerationFinished;
         chatWithGPT.OnChatRequestDone += OnChatRequestDone;
     }
 
-    private void OnModelGenerationFinished(GameObject go)
+    private void OnModelGenerationFinished()
     {
         ttsManager.PlayText("Your object has been conjured");
         chatWithGPT.SendRequest("The last object has been generated tell me a little something about it");
