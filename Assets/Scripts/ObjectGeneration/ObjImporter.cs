@@ -13,6 +13,8 @@ using UnityEngine.Networking;
 
 public class ObjImporter : MonoBehaviour
 {
+    public static ObjImporter Instance;
+
     public enum Status
     {
         ErrorFirstRequest,
@@ -23,10 +25,19 @@ public class ObjImporter : MonoBehaviour
     }
 
     public event Action<string, Vector3> OnModelGenerationStarted;
+
     public event Action<Status> OnModelGenerationStatusChange;
+
     public event Action OnModelRequestSuccess;
+
     public event Action<GameObject> OnModelGenerationFinished;
+
     public event Action<Sprite> OnSourceImageGenerated;
+
+    public void Awake()
+    {
+        Instance = this;
+    }
 
     public void TriggerImageGeneratedEvent(Sprite sprite)
     {

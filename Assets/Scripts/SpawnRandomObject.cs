@@ -6,23 +6,28 @@ using UnityEngine.Networking;
 
 public class SpawnRandomObject : MonoBehaviour
 {
+    public static Vector3 spawnPosition;
+
     [SerializeField]
     private ObjImporter objImporter;
+
     private List<ConversionData> list;
 
     // Start is called before the first frame update
     private void Awake()
     {
+        spawnPosition = transform.position;
+
         InitializeList();
     }
 
     private void Update()
     {
         bool pressedThumbstick = OVRInput.GetUp(OVRInput.Button.PrimaryThumbstick);
-        if (pressedThumbstick) {
+        if (pressedThumbstick)
+        {
             StartCoroutine(GenerateRandomObj());
         }
-
     }
 
     private void InitializeList()

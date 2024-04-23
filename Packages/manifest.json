@@ -1,7 +1,9 @@
 {
   "dependencies": {
     "com.huggingface.api": "https://github.com/huggingface/unity-api.git",
-    "com.meta.xr.sdk.all": "62.0.0",
+    "com.meta.xr.sdk.all": "64.0.0",
+    "com.meta.xr.sdk.interaction.ovr.samples": "64.0.0",
+    "com.meta.xr.simulator.samples": "64.0.0",
     "com.unity.cloud.gltfast": "6.2.0",
     "com.unity.collab-proxy": "2.3.1",
     "com.unity.device-simulator.devices": "1.0.0",
